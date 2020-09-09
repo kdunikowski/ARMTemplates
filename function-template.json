@@ -160,7 +160,7 @@
 			"[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
 		],
 		"properties": {
-			"script_root_path_href": "[concat('https://', parameters('functionAppName'), '.azurewebsites.net/admin/vfs/site/wwwroot/' + parameters('functions')[copyIndex()].name)]",
+			"script_root_path_href": "[concat('https://', parameters('functionAppName'), '.azurewebsites.net/admin/vfs/site/wwwroot/', parameters('functions')[copyIndex()].name)]",
 			"script_href": "[concat('https://',parameters('functionAppName'), '.azurewebsites.net/admin/vfs/site/wwwroot/',  parameters('functions')[copyIndex()].name, '/index.js')]",
 			"config_href": "[concat('https://',parameters('functionAppName'), '.azurewebsites.net/admin/vfs/site/wwwroot/', parameters('functions')[copyIndex()].name, '/function.json')]",
 			"href": "[concat('https://',parameters('functionAppName'), '.azurewebsites.net/admin/functions/', parameters('functions')[copyIndex()].name)]",
