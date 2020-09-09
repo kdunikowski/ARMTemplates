@@ -154,7 +154,7 @@
 	  {
 		"type": "Microsoft.Web/sites/functions",
 		"apiVersion": "2018-11-01",
-		"name": "[concat(parameters('functionAppName'), parameters('functions')[copyIndex()].name)]",
+		"name": "[concat(parameters('functionAppName'),'/', parameters('functions')[copyIndex()].name)]",
 		"location": "[parameters('appInsightLocation')]",
 		"dependsOn": [
 			"[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
