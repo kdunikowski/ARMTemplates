@@ -20,10 +20,7 @@
         },
         "appInsightLocation": {
             "type": "string"
-        },
-		"functions":{
-			"type": "array"
-		}
+        }
     },
     "resources": [
         {
@@ -150,35 +147,6 @@
           "ApplicationId": "[parameters('functionAppName')]",
           "Request_Source": "IbizaDevOpsExtensionCreate"
         }
-      },
-	  {
-            "type": "Microsoft.Web/sites/functions",
-            "apiVersion": "2020-06-01",
-            "name": "[concat(parameters('functionAppName'),'/', parameters('functions')[copyIndex()].name)]",
-		    "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
-            ],
-            "properties": {
-                "config": {
-                    "bindings": [
-                        {
-                        "name": "req",
-                        "webHookType": "genericJson",
-                        "direction": "in",
-                        "type": "httpTrigger"
-                        },
-                        {
-                        "name": "res",
-                        "direction": "out",
-                        "type": "http"
-                        }
-                    ]
-                }
-            },
-            "copy": {
-				"name": "functionsCopy",
-				"count": "[length(parameters('functions'))]"
-			}
-        }
+      }
     ]
   }
