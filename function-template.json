@@ -154,19 +154,19 @@
 	  {
             "type": "Microsoft.Web/sites/functions",
             "apiVersion": "2018-11-01",
-            "name": "[concat(parameters('sites_BacboneIoT_non_telemetry_name'), '/GetInfoApi-deviceId-limit-dates-variable-category')]",
+            "name": "[concat(parameters('functionAppName'), '/HttpTrigger2')]",
             "location": "West Europe",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_BacboneIoT_non_telemetry_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
             ],
             "properties": {
-                "script_root_path_href": "https://bacboneiot-non-telemetry.azurewebsites.net/admin/vfs/site/wwwroot/GetInfoApi-deviceId-limit-dates-variable-category/",
-                "script_href": "https://bacboneiot-non-telemetry.azurewebsites.net/admin/vfs/site/wwwroot/GetInfoApi-deviceId-limit-dates-variable-category/index.js",
-                "config_href": "https://bacboneiot-non-telemetry.azurewebsites.net/admin/vfs/site/wwwroot/GetInfoApi-deviceId-limit-dates-variable-category/function.json",
-                "href": "https://bacboneiot-non-telemetry.azurewebsites.net/admin/functions/GetInfoApi-deviceId-limit-dates-variable-category",
-                "config": {}
+                "script_root_path_href": "https://iotbackbonetestfunction.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger2/",
+                "script_href": "https://iotbackbonetestfunction.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger2/index.js",
+                "config_href": "https://iotbackbonetestfunction.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger2/function.json",
+                "href": "https://iotbackbonetestfunction.azurewebsites.net/admin/functions/HttpTrigger2",
+                "config": {},
+                "test_data": "{\r\n    \"name\": \"Azure\"\r\n}"
             }
         }
-	 
     ]
   }
