@@ -152,24 +152,21 @@
         }
       },
 	  {
-		"type": "Microsoft.Web/sites/functions",
-		"apiVersion": "2018-11-01",
-		"name": "[concat(parameters('functionAppName'),'/', parameters('functions')[copyIndex()].name)]",
-		"location": "[parameters('appInsightLocation')]",
-		"dependsOn": [
-			"[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
-		],
-		"properties": {
-			"script_root_path_href": "[concat('https://', parameters('functionAppName'), '.azurewebsites.net/admin/vfs/site/wwwroot/', parameters('functions')[copyIndex()].name)]",
-			"script_href": "[concat('https://',parameters('functionAppName'), '.azurewebsites.net/admin/vfs/site/wwwroot/',  parameters('functions')[copyIndex()].name, '/index.js')]",
-			"config_href": "[concat('https://',parameters('functionAppName'), '.azurewebsites.net/admin/vfs/site/wwwroot/', parameters('functions')[copyIndex()].name, '/function.json')]",
-			"href": "[concat('https://',parameters('functionAppName'), '.azurewebsites.net/admin/functions/', parameters('functions')[copyIndex()].name)]",
-			"config": {}
-		},
-		"copy": {
-				"name": "functionsCopy",
-				"count": "[length(parameters('functions'))]"
-			}
-      }
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_BacboneIoT_non_telemetry_name'), '/GetInfoApi-deviceId-limit-dates-variable-category')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BacboneIoT_non_telemetry_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://bacboneiot-non-telemetry.azurewebsites.net/admin/vfs/site/wwwroot/GetInfoApi-deviceId-limit-dates-variable-category/",
+                "script_href": "https://bacboneiot-non-telemetry.azurewebsites.net/admin/vfs/site/wwwroot/GetInfoApi-deviceId-limit-dates-variable-category/index.js",
+                "config_href": "https://bacboneiot-non-telemetry.azurewebsites.net/admin/vfs/site/wwwroot/GetInfoApi-deviceId-limit-dates-variable-category/function.json",
+                "href": "https://bacboneiot-non-telemetry.azurewebsites.net/admin/functions/GetInfoApi-deviceId-limit-dates-variable-category",
+                "config": {}
+            }
+        }
+	 
     ]
   }
