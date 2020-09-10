@@ -155,17 +155,25 @@
             "type": "Microsoft.Web/sites/functions",
             "apiVersion": "2020-06-01",
             "name": "[concat(parameters('functionAppName'), '/HttpTrigger2')]",
-            "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
             ],
             "properties": {
-                "script_root_path_href": "https://iotbackbonetestfunction.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger2/",
-                "script_href": "https://iotbackbonetestfunction.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger2/index.js",
-                "config_href": "https://iotbackbonetestfunction.azurewebsites.net/admin/vfs/site/wwwroot/HttpTrigger2/function.json",
-                "href": "https://iotbackbonetestfunction.azurewebsites.net/admin/functions/HttpTrigger2",
-                "config": {},
-                "test_data": "{\r\n    \"name\": \"Azure\"\r\n}"
+                "config": {
+                    "bindings": [
+                        {
+                        "name": "req",
+                        "webHookType": "genericJson",
+                        "direction": "in",
+                        "type": "httpTrigger"
+                        },
+                        {
+                        "name": "res",
+                        "direction": "out",
+                        "type": "http"
+                        }
+                    ]
+                }
             }
         }
     ]
