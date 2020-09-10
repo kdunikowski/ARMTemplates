@@ -151,7 +151,6 @@
           "Request_Source": "IbizaDevOpsExtensionCreate"
         }
       },
-	  
 	  {
 		"type": "Microsoft.Web/sites/functions",
 		"apiVersion": "2018-11-01",
@@ -170,7 +169,7 @@
 		"copy": {
 				"name": "functionsCopy",
 				"count": "[length(parameters('functions'))]"
-			},
+			}
       }
     ]
   }
