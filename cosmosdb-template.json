@@ -9,7 +9,7 @@
         "location": {
             "type":"String"
         },
-          "offertype": {
+          "offerttype": {
             "type":"String"
         }
 
@@ -26,7 +26,7 @@
             "kind": "GlobalDocumentDB",
             "properties": {
                 "createMode": "Default",
-                "databaseAccountOfferType": "[parameters('offertype')]",
+                "databaseAccountofferttype": "[parameters('offerttype')]",
                 "locations": [
                     {
                         "locationName": "[parameters('location')]",
