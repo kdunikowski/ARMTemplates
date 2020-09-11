@@ -1,0 +1,41 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "databaseAccount_name": {
+            "defaultValue": "iot-backbone-events",
+            "type": "object"
+        },
+        "location": {
+            "type":"String"
+        },
+          "offertype": {
+            "type":"String"
+        }
+
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2020-06-01",
+            "name": "[parameters('databaseAccount_name')]",
+            "location": "[parameters('location')]",
+            "tags": {
+            },
+            "kind": "GlobalDocumentDB",
+            "properties": {
+                "createMode": "Default",
+                "databaseAccountOfferType": "[parameters('offertype')]",
+                "locations": [
+                    {
+                        "locationName": "[parameters('location')]",
+                        "provisioningState": "Succeeded",
+                        "failoverPriority": 0,
+                        "isZoneRedundant": false
+                    }
+                ]
+            }
+        }
+    ]
+}
