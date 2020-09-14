@@ -62,14 +62,14 @@
 						"value": "[parameters('databases')[copyIndex()]]"
                     }
                 },
-			    "copy": {
-					"name": "cosmosdb-databases-loop",
-					"count": "[length(parameters('databases'))]"
-				},
 				"dependsOn": [
                     "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccount_name'))]"
                     ]
-            }
+            },
+            "copy": {
+					"name": "cosmosdb-databases-loop",
+					"count": "[length(parameters('databases'))]"
+			}
         }
     ]
 }
