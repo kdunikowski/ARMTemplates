@@ -9,6 +9,9 @@
         "databasename": {
             "defaultValue": "iot-backbone-events",
             "type": "String"
+        },
+        "containers" : {
+            "type":"array"
         }
     },
     "variables": {},
@@ -25,6 +28,36 @@
                 },
                 "options": {}
             }
+        },
+         {
+            "apiVersion": "2017-05-10",
+            "name": "CosmosDb_databases_deploy",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/cosmosdb-container-template.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "databaseAccount_name": {
+						"value": "[parameters('databaseAccount_name')]"
+                    },
+                    "databasename": {
+						"value": "[parameters('databasename')]"
+                    },
+                    "containername": {
+						"value": "[parameters('containers')[copyIndex()]]"
+                    }
+                }
+            },
+            "copy": {
+					"name": "cosmosdb-database-cont-loop",
+					"count": "[length(parameters('containers'))]"
+			},
+			"dependsOn": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases',concat(parameters('databaseAccount_name'), '/', parameters('databasename')))]"
+                ]
         }
     ]
 }

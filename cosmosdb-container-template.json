@@ -2,27 +2,28 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "databaseAccounts_iot_backbone_events_name": {
+        "databaseAccount_name": {
             "defaultValue": "iot-backbone-events",
             "type": "String"
         },
-        "location": {
-            "type":"String"
+        "containername": {
+            "defaultValue": "iot-backbone-events",
+            "type": "String"
         },
-          "offertype": {
-            "type":"String"
+        "databasename": {
+            "defaultValue": "iot-backbone-events",
+            "type": "String"
         }
     },
     "variables": {},
     "resources": [
-        ,
         {
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
             "apiVersion": "2020-06-01-preview",
-            "name": "[concat(parameters('databaseAccounts_iot_backbone_events_name'), '/', parameters('databaseAccounts_iot_backbone_events_name'), '/Alarms')]",
+            "name": "[concat(parameters('databaseAccount_name'), '/', parameters('databasename'), '/', parameters('containername'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_iot_backbone_events_name'), parameters('databaseAccounts_iot_backbone_events_name'))]",
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_iot_backbone_events_name'))]"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccount_name'), parameters('databasename'))]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccount_name'))]"
             ],
             "properties": {
                 "resource": {
@@ -57,91 +58,6 @@
                 },
                 "options": {}
             }
-        },
-        {
-            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-            "apiVersion": "2020-06-01-preview",
-            "name": "[concat(parameters('databaseAccounts_iot_backbone_events_name'), '/', parameters('databaseAccounts_iot_backbone_events_name'), '/Events')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_iot_backbone_events_name'), parameters('databaseAccounts_iot_backbone_events_name'))]",
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_iot_backbone_events_name'))]"
-            ],
-            "properties": {
-                "resource": {
-                    "id": "Events",
-                    "indexingPolicy": {
-                        "indexingMode": "consistent",
-                        "automatic": true,
-                        "includedPaths": [
-                            {
-                                "path": "/*"
-                            }
-                        ],
-                        "excludedPaths": [
-                            {
-                                "path": "/\"_etag\"/?"
-                            }
-                        ]
-                    },
-                    "partitionKey": {
-                        "paths": [
-                            "/deviceid"
-                        ],
-                        "kind": "Hash"
-                    },
-                    "uniqueKeyPolicy": {
-                        "uniqueKeys": []
-                    },
-                    "conflictResolutionPolicy": {
-                        "mode": "LastWriterWins",
-                        "conflictResolutionPath": "/_ts"
-                    }
-                },
-                "options": {}
-            }
-        },
-        {
-            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-            "apiVersion": "2020-06-01-preview",
-            "name": "[concat(parameters('databaseAccounts_iot_backbone_events_name'), '/IoT-Backbone-Info/Info')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_iot_backbone_events_name'), 'IoT-Backbone-Info')]",
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_iot_backbone_events_name'))]"
-            ],
-            "properties": {
-                "resource": {
-                    "id": "Info",
-                    "indexingPolicy": {
-                        "indexingMode": "consistent",
-                        "automatic": true,
-                        "includedPaths": [
-                            {
-                                "path": "/*"
-                            }
-                        ],
-                        "excludedPaths": [
-                            {
-                                "path": "/\"_etag\"/?"
-                            }
-                        ]
-                    },
-                    "partitionKey": {
-                        "paths": [
-                            "/deviceId"
-                        ],
-                        "kind": "Hash"
-                    },
-                    "uniqueKeyPolicy": {
-                        "uniqueKeys": []
-                    },
-                    "conflictResolutionPolicy": {
-                        "mode": "LastWriterWins",
-                        "conflictResolutionPath": "/_ts"
-                    }
-                },
-                "options": {}
-            }
-        },
-       
+        }
     ]
 }
