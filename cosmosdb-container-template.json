@@ -7,11 +7,9 @@
             "type": "String"
         },
         "containername": {
-            "defaultValue": "iot-backbone-events",
             "type": "String"
         },
         "databasename": {
-            "defaultValue": "iot-backbone-events",
             "type": "String"
         }
     },
@@ -22,9 +20,7 @@
             "apiVersion": "2020-06-01-preview",
             "name": "[concat(parameters('databaseAccount_name'), '/', parameters('databasename'), '/', parameters('containername'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccount_name'), parameters('databasename'))]",
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccount_name'))]"
-            ],
+           ],
             "properties": {
                 "resource": {
                     "id": "Alarms",
