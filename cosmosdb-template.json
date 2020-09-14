@@ -30,7 +30,7 @@
             "kind": "GlobalDocumentDB",
             "properties": {
                 "createMode": "Default",
-                "databaseAccountofferttype": "[parameters('offerttype')]",
+                "databaseAccountOfferType": "[parameters('offerttype')]",
                 "locations": [
                     {
                         "locationName": "[parameters('location')]",
