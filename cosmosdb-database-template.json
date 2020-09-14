@@ -24,7 +24,7 @@
             ],
             "properties": {
                 "resource": {
-                    "id": "[parameters('databaseAccount_name')]"
+                    "id": "[parameters('databasename')]"
                 },
                 "options": {}
             }
