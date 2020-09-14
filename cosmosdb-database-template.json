@@ -15,7 +15,7 @@
     "resources": [
         {
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-            "apiVersion": "2020-06-01-preview",
+            "apiVersion": "2020-03-01",
             "name": "[concat(parameters('databaseAccount_name'), '/', parameters('databasename'))]",
             "dependsOn": [
             ],
@@ -24,19 +24,6 @@
                     "id": "[parameters('databaseAccount_name')]"
                 },
                 "options": {}
-            }
-        },
-        {
-            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/throughputSettings",
-            "apiVersion": "2020-06-01-preview",
-            "name": "[concat(parameters('databaseAccount_name'), '/', parameters('databasename'), '/default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccount_name'), parameters('databasename'))]",
-            ],
-            "properties": {
-                "resource": {
-                    "throughput": 400
-                }
             }
         }
     ]
