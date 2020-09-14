@@ -23,7 +23,7 @@
            ],
             "properties": {
                 "resource": {
-                    "id": "Alarms",
+                    "id": "[parameters('containername')]",
                     "indexingPolicy": {
                         "indexingMode": "consistent",
                         "automatic": true,
