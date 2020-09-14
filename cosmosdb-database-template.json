@@ -56,7 +56,7 @@
 					"count": "[length(parameters('containers'))]"
 			},
 			"dependsOn": [
-                    "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases',concat(parameters('databaseAccount_name'), '/', parameters('databasename')))]"
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases',parameters('databaseAccount_name'),  parameters('databasename'))]"
                 ]
         }
     ]
