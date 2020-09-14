@@ -114,6 +114,9 @@
                     },
                     "databasename": {
 						"value": "[parameters('databases')[copyIndex()].name]"
+                    },
+                    "containers":{
+                        "value": "[parameters('databases')[copyIndex()].containers]"
                     }
                 }
             },
