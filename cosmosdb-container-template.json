@@ -142,33 +142,6 @@
                 "options": {}
             }
         },
-        {
-            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/throughputSettings",
-            "apiVersion": "2020-06-01-preview",
-            "name": "[concat(parameters('databaseAccounts_iot_backbone_events_name'), '/', parameters('databaseAccounts_iot_backbone_events_name'), '/default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_iot_backbone_events_name'), parameters('databaseAccounts_iot_backbone_events_name'))]",
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_iot_backbone_events_name'))]"
-            ],
-            "properties": {
-                "resource": {
-                    "throughput": 400
-                }
-            }
-        },
-        {
-            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/throughputSettings",
-            "apiVersion": "2020-06-01-preview",
-            "name": "[concat(parameters('databaseAccounts_iot_backbone_events_name'), '/IoT-Backbone-Info/default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_iot_backbone_events_name'), 'IoT-Backbone-Info')]",
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_iot_backbone_events_name'))]"
-            ],
-            "properties": {
-                "resource": {
-                    "throughput": 400
-                }
-            }
-        }
+       
     ]
 }

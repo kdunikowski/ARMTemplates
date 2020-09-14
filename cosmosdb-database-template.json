@@ -25,6 +25,20 @@
                 },
                 "options": {}
             }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/throughputSettings",
+            "apiVersion": "2020-06-01-preview",
+            "name": "[concat(parameters('databaseAccount_name'), '/', parameters('databasename'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccount_name'), parameters('databasename'))]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccount_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "throughput": 400
+                }
+            }
         }
     ]
 }
