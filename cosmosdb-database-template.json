@@ -53,10 +53,11 @@
             },
             "copy": {
 					"name": "cosmosdb-database-cont-loop",
-					"count": "[length(parameters('containers'))]"
+					"count": "[length(parameters('containers'))]",
+                    "mode": "serial"
 			},
 			"dependsOn": [
-                    "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases',parameters('databaseAccount_name'),  parameters('databasename'))]"
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccount_name'),  parameters('databasename'))]"
                 ]
         }
     ]
