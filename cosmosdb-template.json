@@ -100,7 +100,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat(parameters('databases')[copyIndex()].name, 'Container Deploy')]",
+            "name": "[concat(parameters('databases')[copyIndex()].name, 'databases-deploy')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
