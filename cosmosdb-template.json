@@ -9,11 +9,14 @@
         "location": {
             "type":"String"
         },
-          "offerttype": {
+        "offerttype": {
             "type":"String"
         },
         "accounttype": {
             "type":"String"
+        },
+        "databases": {
+            "type":"array"
         }
 
     },
@@ -39,6 +42,31 @@
                         "isZoneRedundant": false
                     }
                 ]
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[parameters('databases')[copyIndex()]]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/cosmosdb-database-template.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "databaseAccount_name": {
+						"value": "[parameters('databaseAccount_name')]"
+                    },
+                    "databasename": {
+						"value": "[parameters('databases')[copyIndex()]]"
+                    }
+                },
+			    "copy": {
+					"name": "cosmosdb-databases-loop",
+					"count": "[length(parameters('databases'))]"
+				},
+				"dependsOn": []
             }
         }
     ]
