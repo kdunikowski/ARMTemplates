@@ -11,6 +11,9 @@
         },
           "offerttype": {
             "type":"String"
+        },
+        "accounttype": {
+            "type":"String"
         }
 
     },
@@ -22,6 +25,7 @@
             "name": "[parameters('databaseAccount_name')]",
             "location": "[parameters('location')]",
             "tags": {
+                "CosmosAccountType": "[parameters('accounttype')]"
             },
             "kind": "GlobalDocumentDB",
             "properties": {
