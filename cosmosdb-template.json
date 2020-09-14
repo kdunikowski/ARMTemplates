@@ -46,7 +46,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[parameters('databases')[copyIndex()]]",
+            "name": "CosmosDb_databases_deploy",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
