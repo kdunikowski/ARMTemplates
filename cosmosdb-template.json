@@ -59,7 +59,7 @@
 						"value": "[parameters('databaseAccount_name')]"
                     },
                     "databasename": {
-						"value": "[parameters('databases')[copyIndex()]]"
+						"value": "[parameters('databases')[copyIndex().name]]"
                     }
                 },
 				"dependsOn": [
