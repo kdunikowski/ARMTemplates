@@ -19,6 +19,9 @@
         },
         "partitionCount": {
             "type": "Int"
+        },
+        "messageRetentionInDays": {
+            "type": "Int"
         }
     },
     "variables": {},
@@ -32,7 +35,8 @@
            ],
             "properties": {
                 "partitionCount": "[parameters('partitionCount')]",
-                "status": "Active"
+                "status": "Active",
+                "messageRetentionInDays": "[parameters('messageRetentionInDays')]"
             }
         },
         {
