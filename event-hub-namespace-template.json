@@ -3,19 +3,15 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "eventHubNamespaceName": {
-            "defaultValue": "backbonehub",
             "type": "String"
         },
         "location": {
-            "defaultValue": "West Europe",
             "type": "String"
         },
         "skuTier": {
-            "defaultValue": "Basic",
             "type": "String"
         },
          "skuCapacity": {
-            "defaultValue": "1",
             "type": "Int"
         },
         "eventHubs" : {

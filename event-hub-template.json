@@ -3,15 +3,12 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "eventHubNamespaceName": {
-            "defaultValue": "backbonehub",
             "type": "String"
         },
         "eventHubName": {
-            "defaultValue": "backbonehub",
             "type": "array"
         },
         "consumerGroup": {
-            "defaultValue": "backbonehub",
             "type": "String"
         },
         "authorizationRules": {
