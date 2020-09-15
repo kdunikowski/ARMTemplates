@@ -71,7 +71,7 @@
         },
          {
             "apiVersion": "2017-05-10",
-            "name": "[concat(parameters('eventHubs')[copyIndex()].name, '-events-hub-deploy')]",
+            "name": "[concat(parameters('eventHubs')[copyIndex()].eventHubName, '-events-hub-deploy')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
