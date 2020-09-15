@@ -78,7 +78,7 @@
                         "value": "[parameters('eventHubs')[copyIndex()].authorizationRules]"
                     },
                     "messageRetentionInDays":{
-                        "value": "[parameters('eventHubs')[copyIndex()].authorizationRules]"
+                        "value": "[parameters('eventHubs')[copyIndex()].messageRetentionInDays]"
                     },
                     "location": {
                           "value": "[parameters('location')]"
