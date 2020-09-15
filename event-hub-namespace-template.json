@@ -84,7 +84,7 @@
 						"value": "[parameters('eventHubNamespaceName')]"
                     },
                     "eventHubName": {
-						"value": "[parameters('eventHubs')[copyIndex()].name]"
+						"value": "[parameters('eventHubs')[copyIndex()].eventHubName]"
                     },
                     "partitionCount": {
 						"value": "[parameters('eventHubs')[copyIndex()].partitionCount]"
