@@ -1,0 +1,113 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "eventHubNamespaceName": {
+            "defaultValue": "backbonehub",
+            "type": "String"
+        },
+        "location": {
+            "defaultValue": "West Europe",
+            "type": "String"
+        },
+        "skuTier": {
+            "defaultValue": "Basic",
+            "type": "String"
+        },
+         "skuCapacity": {
+            "defaultValue": "1",
+            "type": "Int"
+        },
+        "eventHubs" : {
+            "type": "array"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.EventHub/namespaces",
+            "apiVersion": "2018-01-01-preview",
+            "name": "[parameters('eventHubNamespaceName')]",
+            "location": "[parameters('location')]",
+            "tags": {
+            },
+            "sku": {
+                "name": "[parameters('skuTier')]",
+                "tier": "[parameters('skuTier')]",
+                "capacity": "[parameters('skuCapacity')]"
+            },
+            "properties": {
+            }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces/AuthorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('eventHubNamespaceName'), '/RootManageSharedAccessKey')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventHubNamespaceName'))]"
+            ],
+            "properties": {
+                "rights": [
+                    "Listen",
+                    "Manage",
+                    "Send"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces/networkRuleSets",
+            "apiVersion": "2018-01-01-preview",
+            "name": "[concat(parameters('eventHubNamespaceName'), '/default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventHubNamespaceName'))]"
+            ],
+            "properties": {
+                "defaultAction": "Deny",
+                "virtualNetworkRules": [],
+                "ipRules": []
+            }
+        },
+         {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('eventHubs')[copyIndex()].name, '-events-hub-deploy')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/event-hub-template.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "eventHubNamespaceName": {
+						"value": "[parameters('eventHubNamespaceName')]"
+                    },
+                    "eventHubName": {
+						"value": "[parameters('eventHubs')[copyIndex()].name]"
+                    },
+                    "partitionCount": {
+						"value": "[parameters('eventHubs')[copyIndex()].partitionCount]"
+                    },
+                    "consumerGroups":{
+                        "value": "[parameters('eventHubs')[copyIndex()].consumerGroups]"
+                    },
+                    "authorizationRules":{
+                        "value": "[parameters('eventHubs')[copyIndex()].authorizationRules]"
+                    },
+                    "location": {
+                          "value": "[parameters('location')]"
+                    }
+                }
+            },
+            "copy": {
+					"name": "eventHubs-loop",
+					"count": "[length(parameters('eventHubs'))]",
+                    "mode": "serial"
+			},
+			"dependsOn": [
+                    "[resourceId('Microsoft.EventHub/namespaces', parameters('eventHubNamespaceName'))]"
+                ]
+        }
+    ]
+}
