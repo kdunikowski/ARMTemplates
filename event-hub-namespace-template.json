@@ -85,8 +85,8 @@
                     "partitionCount": {
 						"value": "[parameters('eventHubs')[copyIndex()].partitionCount]"
                     },
-                    "consumerGroups":{
-                        "value": "[parameters('eventHubs')[copyIndex()].consumerGroups]"
+                    "consumerGroup":{
+                        "value": "[parameters('eventHubs')[copyIndex()].consumerGroup]"
                     },
                     "authorizationRules":{
                         "value": "[parameters('eventHubs')[copyIndex()].authorizationRules]"
