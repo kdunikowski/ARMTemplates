@@ -52,20 +52,6 @@
             }
         },
         {
-            "type": "Microsoft.EventHub/namespaces/networkRuleSets",
-            "apiVersion": "2018-01-01-preview",
-            "name": "[concat(parameters('eventHubNamespaceName'), '/default')]",
-            "location": "West Europe",
-            "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventHubNamespaceName'))]"
-            ],
-            "properties": {
-                "defaultAction": "Deny",
-                "virtualNetworkRules": [],
-                "ipRules": []
-            }
-        },
-         {
             "apiVersion": "2017-05-10",
             "name": "[concat(parameters('eventHubs')[copyIndex()].eventHubName, '-events-hub-deploy')]",
             "type": "Microsoft.Resources/deployments",
