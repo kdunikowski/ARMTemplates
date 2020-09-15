@@ -6,7 +6,7 @@
             "type": "String"
         },
         "eventHubName": {
-            "type": "array"
+            "type": "String"
         },
         "consumerGroup": {
             "type": "String"
@@ -34,6 +34,23 @@
                 "partitionCount": "[parameters('partitionCount')]",
                 "status": "Active"
             }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('eventHubNamespaceName'), '/', parameters('eventHubName'), '/', parameters('authorizationRules')[copyIndex()].name)]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventHubNamespaceName'), parameters('eventHubName'))]"
+            ],
+            "properties": {
+                "rights":  "[parameters('authorizationRules')[copyIndex()].rights]"
+            },
+             "copy": {
+					"name": "authorizationRules-loop",
+					"count": "[length(parameters('authorizationRules'))]",
+                    "mode": "serial"
+			}
         },
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
