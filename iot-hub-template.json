@@ -1,0 +1,109 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "iotHubName": {
+            "defaultValue": "BackboneIoTHub",
+            "type": "String"
+        },
+        "location": {
+            "type": "string"
+        },
+        "skuName": {
+            "type":"string"
+        },
+        "tier": {
+            "type":"string"
+        },
+        "capacity": {
+            "type":"int"
+        },
+        "retentionTimeInDays": {
+            "type":"int"
+        },
+        "partitionCount": {
+            "type":"int"
+        },
+        "eventHubs": {
+            "type":"array"
+        },
+        "routes": {
+            "type":"array"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Devices/IotHubs",
+            "apiVersion": "2020-04-01",
+            "name": "[parameters('iotHubName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "[parameters('skuName')]",
+                "tier": "[parameters('tier')]",
+                "capacity": "[parameters('capacity')]"
+            },
+            "identity": {
+                "type": "None"
+            },
+            "properties": {
+                "ipFilterRules": [],
+                "eventHubEndpoints": {
+                    "events": {
+                        "retentionTimeInDays": "[parameters('retentionTimeInDays')]",
+                        "partitionCount": "[parameters('partitionCount')]"
+                    }
+                },
+                "routing": {
+                    "endpoints": {
+                        "serviceBusQueues": [],
+                        "serviceBusTopics": [],
+                        "eventHubs": [
+                            {
+                                "connectionString": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubs')[copyIndex()].eventHubNamespaceName, parameters('eventHubs')[copyIndex()].eventHubName, parameters('eventHubs')[copyIndex()].eventHubAuthRuleName), '2017-04-01').primaryConnectionString]",
+                                "name": "[parameters('eventHubs')[copyIndex()].name]",
+                                "subscriptionId": "[subscription().subscriptionId]",
+                                "resourceGroup": "[resourceGroup().name]",
+                                "copy":{
+                                    "name": "iotHub-eventHubs-loop",
+					                "count": "[length(parameters('eventHubs'))]",
+                                    "mode": "serial"
+                                }
+                            }
+                        ],
+                        "storageContainers": []
+                    },
+                    "routes": [
+                    ],
+                    "fallbackRoute": {
+                        "name": "$fallback",
+                        "source": "DeviceMessages",
+                        "condition": "true",
+                        "endpointNames": [
+                            "events"
+                        ],
+                        "isEnabled": true
+                    }
+                },
+               "messagingEndpoints": {
+                    "fileNotifications": {
+                        "lockDurationAsIso8601": "PT1M",
+                        "ttlAsIso8601": "PT1H",
+                        "maxDeliveryCount": 10
+                    }
+                },
+                "enableFileUploadNotifications": false,
+                "cloudToDevice": {
+                    "maxDeliveryCount": 10,
+                    "defaultTtlAsIso8601": "PT1H",
+                    "feedback": {
+                        "lockDurationAsIso8601": "PT1M",
+                        "ttlAsIso8601": "PT1H",
+                        "maxDeliveryCount": 10
+                    }
+                },
+                "features": "None"
+            }
+        }
+    ]
+}
