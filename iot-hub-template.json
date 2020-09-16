@@ -154,7 +154,10 @@
                     }
                 },
                 "features": "None"
-            }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+            ]
         }
     ]
 }
