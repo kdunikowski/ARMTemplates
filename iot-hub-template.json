@@ -33,13 +33,13 @@
     "variables": {
          "copy": [
              {
-                 "name": "iotHub-eventHubs",
+                "name": "iotHub-eventHubs",
                 "count": "[length(parameters('eventHubs'))]",
                 "mode": "serial",
                 "input":
                 {
                     "connectionString": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubs')[copyIndex()].eventHubNamespaceName, parameters('eventHubs')[copyIndex()].eventHubName, parameters('eventHubs')[copyIndex()].eventHubAuthRuleName), '2017-04-01').primaryConnectionString]",
-                    "name": "[parameters('eventHubs')[copyIndex()].name]",
+                    "name": "[parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].name]",
                     "subscriptionId": "[subscription().subscriptionId]",
                     "resourceGroup": "[resourceGroup().name]"
                  }
