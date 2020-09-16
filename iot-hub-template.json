@@ -75,6 +75,20 @@
                         "storageContainers": []
                     },
                     "routes": {
+                          "copy": [
+                                    {
+                                        "name": "iotHub-routes",
+                                        "count": "[length(parameters('routes'))]",
+                                        "mode": "serial",
+                                        "input":
+                                        {
+                                                    "name": "[parameters('eventHubs')[copyIndex('iotHub-routes', 0)].name]",
+                                                    "source": "[parameters('eventHubs')[copyIndex('iotHub-routes', 0)].source]",
+                                                    "condition": "[parameters('eventHubs')[copyIndex('iotHub-routes', 0)].condition]",
+                                                    "endpointNames":"[parameters('eventHubs')[copyIndex('iotHub-routes', 0)].endpointNames]",
+                                                    "isEnabled": true
+                                        }
+                                    }]
                     },
                     "fallbackRoute": {
                         "name": "$fallback",
