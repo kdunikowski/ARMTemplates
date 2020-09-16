@@ -56,44 +56,56 @@
                         "partitionCount": "[parameters('partitionCount')]"
                     }
                 },
-                "enableFileUploadNotifications": false,
-                "features": "None"
-            }
-        }
-    ],
-    "outputs" : {
-            "eventHubs": {
-                            "copy": 
+                "routing": {
+                    "endpoints": {
+                        "serviceBusQueues": [],
+                        "serviceBusTopics": [],
+                        "eventHubs": {
+                            "copy": [
                                 {
+                                        "name": "iotHub-eventHubs",
                                         "count": "[length(parameters('eventHubs'))]",
+                                        "mode": "serial",
                                         "input":
                                         {
-                                            "connectionString": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubs')[copyIndex()].eventHubNamespaceName, parameters('eventHubs')[copyIndex()].eventHubName, parameters('eventHubs')[copyIndex()].eventHubAuthRuleName), '2017-04-01').primaryConnectionString]",
-                                            "name": "[parameters('eventHubs')[copyIndex()].name]",
-                                            "id": "test-id-for-eventh-a",
+                                            "connectionString": "[concat('Endpoint=sb://iot-backbone-event-hub-test.servicebus.windows.net:5671/;SharedAccessKeyName=iothubroutes_', parameters('iotHubName'), ';SharedAccessKey=****;EntityPath=iotbackeventhub')]",
+                                            "name": "[parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].name]",
                                             "subscriptionId": "[subscription().subscriptionId]",
                                             "resourceGroup": "[resourceGroup().name]"
                                         }
                                 }
-                            
-                            ,
-                            "type": "array"
-            },
-                                "routes": {
-                          "copy": {
-                                    "count": "[length(parameters('routes'))]",
+                            ]
+                        }
+                    },
+                    "routes": {
+                          "copy": [
+                                    {
+                                        "name": "iotHub-routes",
+                                        "count": "[length(parameters('routes'))]",
+                                        "mode": "serial",
                                         "input":
                                         {
-                                                    "name": "[parameters('routes')[copyIndex()].name]",
-                                                    "source": "[parameters('routes')[copyIndex()].source]",
-                                                    "condition": "[parameters('routes')[copyIndex()].condition]",
-                                                    "endpointNames":"[parameters('routes')[copyIndex()].endpointNames]",
+                                                    "name": "[parameters('routes')[copyIndex('iotHub-routes', 0)].name]",
+                                                    "source": "[parameters('routes')[copyIndex('iotHub-routes', 0)].source]",
+                                                    "condition": "[parameters('routes')[copyIndex('iotHub-routes', 0)].condition]",
+                                                    "endpointNames":"[parameters('routes')[copyIndex('iotHub-routes', 0)].endpointNames]",
                                                     "isEnabled": true
                                         }
-                                    },
-                            "type": "array"
-                                }
-
-        
-    }
+                                    }]
+                    },
+                    "fallbackRoute": {
+                        "name": "$fallback",
+                        "source": "DeviceMessages",
+                        "condition": "true",
+                        "endpointNames": [
+                            "events"
+                        ],
+                        "isEnabled": true
+                    }
+                },
+                "enableFileUploadNotifications": false,
+                "features": "None"
+            }
+        }
+    ]
 }
