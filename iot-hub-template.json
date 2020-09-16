@@ -52,6 +52,40 @@
                         "partitionCount": "[parameters('partitionCount')]"
                     }
                 },
+                "routing": {
+                    "endpoints": {
+                        "serviceBusQueues": [],
+                        "serviceBusTopics": [],
+                        "eventHubs": {
+                             "copy": [
+                                    {
+                                        "name": "iotHub-eventHubs",
+                                        "count": "[length(parameters('eventHubs'))]",
+                                        "mode": "serial",
+                                        "input":
+                                        {
+                                            "connectionString": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubNamespaceName, parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubName, parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubAuthRuleName), '2017-04-01').primaryConnectionString]",
+                                            "name": "[parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].name]",
+                                            "id": "test-id-for-eventh-a",
+                                            "subscriptionId": "[subscription().subscriptionId]",
+                                            "resourceGroup": "[resourceGroup().name]"
+                                        }
+                                    }]
+                        },
+                        "storageContainers": []
+                    },
+                    "routes": {
+                    },
+                    "fallbackRoute": {
+                        "name": "$fallback",
+                        "source": "DeviceMessages",
+                        "condition": "true",
+                        "endpointNames": [
+                            "events"
+                        ],
+                        "isEnabled": true
+                    }
+                },
                "messagingEndpoints": {
                     "fileNotifications": {
                         "lockDurationAsIso8601": "PT1M",
