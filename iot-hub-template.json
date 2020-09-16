@@ -30,8 +30,37 @@
             "type":"array"
         }
     },
-    "variables": {},
-    "resources": [
+      "variables": {
+        "storageAccountName": "[concat(toLower(parameters('iotHubName')), uniqueString(resourceGroup().id))]",
+        "storageContainerName": "[concat(toLower(parameters('iotHubName')), 'results')]"
+    },
+    "resources": 
+    [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "name": "[variables('storageAccountName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "properties": {},
+            "resources": [
+                {
+                    "type": "blobServices/containers",
+                    "apiVersion": "2019-06-01",
+                    "name": "[concat('default/', variables('storageContainerName'))]",
+                    "properties": {
+                        "publicAccess": "None"
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+                    ]
+                }
+            ]
+        },
         {
             "type": "Microsoft.Devices/IotHubs",
             "apiVersion": "2020-03-01",
@@ -57,22 +86,29 @@
                         "serviceBusQueues": [],
                         "serviceBusTopics": [],
                         "eventHubs": {
-                             "copy": [
-                                    {
+                            "copy": [
+                                {
                                         "name": "iotHub-eventHubs",
                                         "count": "[length(parameters('eventHubs'))]",
                                         "mode": "serial",
                                         "input":
                                         {
-                                            "connectionString": "[parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].connectionString]",
+                                            "connectionString": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubNamespaceName, parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubName, parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubAuthRuleName), '2017-04-01').primaryConnectionString]",
                                             "name": "[parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].name]",
                                             "id": "test-id-for-eventh-a",
                                             "subscriptionId": "[subscription().subscriptionId]",
                                             "resourceGroup": "[resourceGroup().name]"
                                         }
-                                    }]
+                                }
+                            ]
                         },
-                        "storageContainers": []
+                        "storageEndpoints": {
+                            "$default": {
+                                "sasTtlAsIso8601": "PT1H",
+                                "connectionString": "[Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';EndpointSuffix=',environment().suffixes.storage,';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value)]",
+                                "containerName": "[variables('storageContainerName')]"
+                            }
+                        }
                     },
                     "routes": {
                           "copy": [
