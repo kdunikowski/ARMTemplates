@@ -68,8 +68,9 @@
                                         "mode": "serial",
                                         "input":
                                         {
-                                            "connectionString": "[concat('Endpoint=sb://iot-backbone-event-hub-test.servicebus.windows.net:5671/;SharedAccessKeyName=iothubroutes_', parameters('iotHubName'), ';SharedAccessKey=****;EntityPath=iotbackeventhub')]",
+                                            "connectionString": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubNamespaceName, parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubName, parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubAuthRuleName), '2017-04-01').primaryConnectionString]",
                                             "name": "[parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].name]",
+                                            "id": "test-id-for-eventh-a",
                                             "subscriptionId": "[subscription().subscriptionId]",
                                             "resourceGroup": "[resourceGroup().name]"
                                         }
