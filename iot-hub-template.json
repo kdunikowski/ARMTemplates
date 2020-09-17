@@ -30,11 +30,13 @@
             "type":"array"
         }
     },
+    "variables": {
+    },
     "resources": 
     [
         {
             "type": "Microsoft.Devices/IotHubs",
-            "apiVersion": "2020-03-01",
+            "apiVersion": "2017-04-01",
             "name": "[parameters('iotHubName')]",
             "location": "[parameters('location')]",
             "sku": {
@@ -62,11 +64,9 @@
                                         "name": "iotHub-eventHubs",
                                         "count": "[length(parameters('eventHubs'))]",
                                         "mode": "serial",
-                                        "input":
-                                        {
+                                        "input":{
                                             "connectionString": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubNamespaceName, parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubName, parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubAuthRuleName), '2017-04-01').primaryConnectionString]",
-                                            "name": "[parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].name]",
-                                            "id": "test-id-for-eventh-a",
+                                            "name": "[parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubName]",
                                             "subscriptionId": "[subscription().subscriptionId]",
                                             "resourceGroup": "[resourceGroup().name]"
                                         }
