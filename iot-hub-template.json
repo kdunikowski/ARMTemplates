@@ -58,17 +58,7 @@
                     "endpoints": {
                         "serviceBusQueues": [],
                         "serviceBusTopics": [],
-                        "eventHubs": [{
-
-                        
-                                            "connectionString": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', 'iot-backbone-event-hub-test', 'iotbackeventhubb', 'iothubroutes_testbbiothub'), '2017-04-01').primaryConnectionString]",
-                                            "name": "iotbackeventhubb",
-                                            "subscriptionId": "[subscription().subscriptionId]",
-                                            "resourceGroup": "[resourceGroup().name]"
-                                        }
-                                
-                            ]
-                        
+                        "eventHubs": "[parameters('eventHubs')]"
                     },
                     "routes": [
 

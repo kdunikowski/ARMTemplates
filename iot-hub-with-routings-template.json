@@ -1,0 +1,72 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "iotHub": {
+            "type": "Object"
+        }
+    },
+    "resources": [
+        {
+		"apiVersion": "2017-05-10",
+            "name": "[concat('iothubrout',parameters('iotHub').iotHubName)]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/iot-hub-routings.json",
+                    "contentVersion": "1.0.0.0"
+                },
+				"parameters": {
+					"eventHubs": {
+						"value": "[parameters('iotHub').eventHubs]"
+					}
+				}
+			}
+		},
+		{
+            "apiVersion": "2017-05-10",
+            "name": "[parameters('iotHub').iotHubName]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/iot-hub-template.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+					"iotHubName": {
+						"value": "[parameters('iotHub').iotHubName]"
+					},
+					"location": {
+						"value": "[parameters('iotHub').location]"
+					},
+					"skuName": {
+						"value": "[parameters('iotHub').skuName]"
+					},
+					"tier": {
+						"value": "[parameters('iotHub').tier]"
+					},
+					"capacity": {
+						"value": "[parameters('iotHub').capacity]"
+					},
+					"retentionTimeInDays": {
+						"value": "[parameters('iotHub').retentionTimeInDays]"
+					},
+					"partitionCount": {
+						"value": "[parameters('iotHub').partitionCount]"
+					},
+					"eventHubs": {
+						"value": "[reference(concat('iothubrout',parameters('iotHub').iotHubName)).outputs.iotHubEventHubs.value]"
+					},
+					"routes": {
+						"value": "[parameters('iotHub').routes]"
+					}
+				}
+			},
+				"dependsOn": [
+					"[concat('iothubrout',parameters('iotHub').iotHubName)]"
+					]
+		}
+    ]
+}
