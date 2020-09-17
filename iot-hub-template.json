@@ -36,7 +36,7 @@
     [
         {
             "type": "Microsoft.Devices/IotHubs",
-            "apiVersion": "2017-04-01",
+            "apiVersion": "2017-07-01",
             "name": "[parameters('iotHubName')]",
             "location": "[parameters('location')]",
             "sku": {
