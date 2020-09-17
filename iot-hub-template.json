@@ -58,38 +58,22 @@
                     "endpoints": {
                         "serviceBusQueues": [],
                         "serviceBusTopics": [],
-                        "eventHubs": {
-                            "copy": [
-                                {
-                                        "name": "iotHub-eventHubs",
-                                        "count": "[length(parameters('eventHubs'))]",
-                                        "mode": "serial",
-                                        "input":{
-                                            "connectionString": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubNamespaceName, parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubName, parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubAuthRuleName), '2017-04-01').primaryConnectionString]",
-                                            "name": "[parameters('eventHubs')[copyIndex('iotHub-eventHubs', 0)].eventHubName]",
+                        "eventHubs": [{
+
+                        
+                                            "connectionString": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', 'iot-backbone-event-hub-test', 'iotbackeventhub', 'iothubroutes_testbbiothub'), '2017-04-01').primaryConnectionString]",
+                                            "name": "iotbackeventhub",
                                             "subscriptionId": "[subscription().subscriptionId]",
                                             "resourceGroup": "[resourceGroup().name]"
                                         }
-                                }
+                                
                             ]
                         }
                     },
-                    "routes": {
-                          "copy": [
-                                    {
-                                        "name": "iotHub-routes",
-                                        "count": "[length(parameters('routes'))]",
-                                        "mode": "serial",
-                                        "input":
-                                        {
-                                                    "name": "[parameters('routes')[copyIndex('iotHub-routes', 0)].name]",
-                                                    "source": "[parameters('routes')[copyIndex('iotHub-routes', 0)].source]",
-                                                    "condition": "[parameters('routes')[copyIndex('iotHub-routes', 0)].condition]",
-                                                    "endpointNames":"[parameters('routes')[copyIndex('iotHub-routes', 0)].endpointNames]",
-                                                    "isEnabled": true
-                                        }
-                                    }]
-                    },
+                    "routes": [
+
+                                    
+                    ],
                     "fallbackRoute": {
                         "name": "$fallback",
                         "source": "DeviceMessages",
