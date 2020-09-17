@@ -60,10 +60,7 @@
                         "serviceBusTopics": [],
                         "eventHubs": "[parameters('eventHubs')]"
                     },
-                    "routes": [
-
-                                    
-                    ],
+                    "routes":"[parameters('routes')]",
                     "fallbackRoute": {
                         "name": "$fallback",
                         "source": "DeviceMessages",

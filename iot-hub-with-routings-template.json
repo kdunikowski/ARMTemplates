@@ -63,7 +63,7 @@
 						"value": "[reference(concat('iothubrout',parameters('iotHub').iotHubName)).outputs.iotHubEventHubs.value]"
 					},
 					"routes": {
-						"value": "[parameters('iotHub').routes]"
+						"value": "[reference(concat('iothubrout',parameters('iotHub').iotHubName)).outputs.iotHubRoutes.value]"
 					}
 				}
 			},

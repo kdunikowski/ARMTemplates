@@ -14,6 +14,20 @@
     "resources": 
     [],
     "outputs" : {
+        "iotHubRoutes":{
+            "type":"array",
+             "copy": {
+                "count": "[length(parameters('routes'))]",
+                "input":
+                {
+                    "name": "[parameters('routes')[copyIndex()].name]",
+                    "source": "[parameters('routes')[copyIndex()].source]",
+                    "condition": "[parameters('routes')[copyIndex()].condition]",
+                    "endpointNames": "[parameters('routes')[copyIndex()].endpointNames]",
+                    "isEnabled": true
+                }
+            }
+        },
         "iotHubEventHubs":    { 
             "type":"array",
             "copy": {
