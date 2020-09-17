@@ -20,6 +20,9 @@
 				"parameters": {
 					"eventHubs": {
 						"value": "[parameters('iotHub').eventHubs]"
+					},
+					"routes": {
+						"value": "[parameters('iotHub').routes]"
 					}
 				}
 			}
