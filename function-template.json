@@ -122,7 +122,7 @@
             "properties": {
                 "siteConfig": {
                     "alwaysOn": "[not(equals(parameters('sku'), 'Dynamic Y1'))]",
-                    "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties, reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties)]"
+                    "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties.value, reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties.value)]"
                 },
                 "name": "[parameters('functionAppName')]",
                 "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
