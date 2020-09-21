@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "accesKeyProperties": {
+        "accessKeyProperties": {
             "type":"array"
         }
     },
@@ -14,11 +14,11 @@
         "properties":{
             "type":"array",
              "copy": {
-                "count": "[length(parameters('accesKeyProperties'))]",
+                "count": "[length(parameters('accessKeyProperties'))]",
                 "input":
                 {
-                    "name": "[parameters('accesKeyProperties')[copyIndex()].name]",
-                    "value": "[listConnectionStrings(resourceId(parameters('accesKeyProperties')[copyIndex()].resourceType, parameters('accesKeyProperties')[copyIndex()].resourceName),  parameters('accesKeyProperties')[copyIndex()].apiVersion).connectionStrings[0].connectionString]"
+                    "name": "[parameters('accessKeyProperties')[copyIndex()].name]",
+                    "value": "[listConnectionStrings(resourceId(parameters('accessKeyProperties')[copyIndex()].resourceType, parameters('accessKeyProperties')[copyIndex()].resourceName),  parameters('accessKeyProperties')[copyIndex()].apiVersion).connectionStrings[0].connectionString]"
                 }
             }
         }
