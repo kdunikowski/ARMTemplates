@@ -126,7 +126,7 @@
                 "hostingEnvironment": ""
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+                "[concat(parameters('functionAppName'),'storage')]",
                 "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
                 "[resourceId('microsoft.insights/components/', parameters('functionAppName'))]",
                 "[concat(parameters('functionAppName'),'-database-connection-properties')]"
