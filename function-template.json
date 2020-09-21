@@ -67,7 +67,7 @@
             },
             "dependsOn": ["[concat(parameters('functionAppName'),'storage')]"]
         },
-                {
+        {
             "apiVersion": "2017-05-10",
             "name": "[concat(parameters('functionAppName'),'-database-connection-properties')]",
             "type": "Microsoft.Resources/deployments",
@@ -115,14 +115,14 @@
                     "dependsOn": [
                         "[resourceId('Microsoft.Web/Sites', parameters('functionAppName'))]"
                     ],
-                    "properties": "[concat()]"
+                    "properties":[]
                     
                 }
             ],
             "properties": {
                 "siteConfig": {
                     "alwaysOn": "[not(equals(parameters('sku'), 'Dynamic Y1'))]",
-                    "appSettings": "[concat(parameters('databaseConnectionProperties'), reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties)]"
+                    "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties, reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties)]"
                 },
                 "name": "[parameters('functionAppName')]",
                 "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
