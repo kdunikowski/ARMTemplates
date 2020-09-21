@@ -57,6 +57,9 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
+                    "functionAppName": {
+                        "value":"[parameters('functionAppName')]"
+                    },
                     "storageAccountName": {
 						"value": "[parameters('storageAccountName')]"
                     }
