@@ -23,135 +23,129 @@
         },
 		"functions":{
 			"type": "array"
-		}
+		},
+        "databaseConnectionProperties": {
+            "type":"array"
+        }
     },
     "resources": [
         {
-            "type": "Microsoft.Storage/storageAccounts",
-            "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
-            },
-            "kind": "Storage",
-            "name": "[parameters('storageAccountName')]",
-            "apiVersion": "2018-07-01",
-            "location": "[resourceGroup().location]",
-            "tags": {},
-            "scale": null,
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('functionAppName'),'storage')]",
+            "type": "Microsoft.Resources/deployments",
             "properties": {
-                "networkAcls": {
-                    "bypass": "AzureServices",
-                    "virtualNetworkRules": [],
-                    "ipRules": [],
-                    "defaultAction": "Allow"
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/storage-account-template.json",
+                    "contentVersion": "1.0.0.0"
                 },
-                "supportsHttpsTrafficOnly": false,
-                "encryption": {
-                    "services": {
-                        "file": {
-                            "enabled": true
-                        },
-                        "blob": {
-                            "enabled": true
-                        }
-                    },
-                    "keySource": "Microsoft.Storage"
-                }
-            },
-            "dependsOn": []
-        },
-      {
-        "type": "Microsoft.Web/serverfarms",
-        "sku": {
-            "Tier": "[first(split(parameters('sku'), ' '))]",
-            "Name": "[first(skip(split(parameters('sku'), ' '), 1))]"
-        },
-        "apiVersion": "2015-08-01",
-        "name": "[parameters('hostingPlanName')]",
-        "location": "[resourceGroup().location]",
-        "properties": {
-          "name": "[parameters('hostingPlanName')]"
-        }
-      },
-      {
-        "type": "Microsoft.Web/sites",
-        "name": "[parameters('functionAppName')]",
-        "kind": "functionapp",
-        "apiVersion": "2020-06-01",
-        "location": "[resourceGroup().location]",
-        "tags": {
-            "[concat('hidden-related:', '/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "empty"
-        },
-        "resources": [
-            {
-                "type": "siteextensions",
-                "name": "Microsoft.ApplicationInsights.AzureWebSites",
-                "apiVersion": "2015-08-01",
-                "dependsOn": [
-                    "[resourceId('Microsoft.Web/Sites', parameters('functionAppName'))]"
-                ],
-                "properties": {
+                "parameters": {
+                    "storageAccountName": {
+						"value": "[parameters('storageAccountName')]"
+                    }
                 }
             }
-        ],
-        "properties": {
-            "siteConfig": {
-                "alwaysOn": "[not(equals(parameters('sku'), 'Dynamic Y1'))]",
-                "appSettings": [
-                    {
-                        "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                        "value": "[reference(resourceId('microsoft.insights/components/', parameters('functionAppName')), '2015-05-01').InstrumentationKey]"
-                    },
-                    {
-                        "name": "FUNCTIONS_WORKER_RUNTIME",
-                        "value": "node"
-                    },
-                    {
-                        "name": "AzureWebJobsStorage",
-                        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1)]"
-                    },
-                    {
-                        "name": "FUNCTIONS_EXTENSION_VERSION",
-                        "value": "~2"
-                    },
-                    {
-                        "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-                        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1)]"
-                    },
-                    {
-                        "name": "WEBSITE_CONTENTSHARE",
-                        "value": "[parameters('storageAccountName')]"
-                    },
-                    {
-                        "name": "WEBSITE_NODE_DEFAULT_VERSION",
-                        "value": "8.11.1"
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('functionAppName'),'-properties')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/function-app-properties.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "storageAccountName": {
+						"value": "[parameters('storageAccountName')]"
                     }
-                ]
+                }
             },
+            "dependsOn": ["[concat(parameters('functionAppName'),'storage')]"]
+        },
+                {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('functionAppName'),'-database-connection-properties')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/database-connection-properties.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "storageAccountName": {
+						"value": "[parameters('databaseConnectionProperties')]"
+                    }
+                }
+            },
+            "dependsOn": ["[concat(parameters('functionAppName'),'storage')]"]
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "sku": {
+                "Tier": "[first(split(parameters('sku'), ' '))]",
+                "Name": "[first(skip(split(parameters('sku'), ' '), 1))]"
+            },
+            "apiVersion": "2015-08-01",
+            "name": "[parameters('hostingPlanName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+            "name": "[parameters('hostingPlanName')]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
             "name": "[parameters('functionAppName')]",
-            "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-            "hostingEnvironment": ""
+            "kind": "functionapp",
+            "apiVersion": "2020-06-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "[concat('hidden-related:', '/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "empty"
+            },
+            "resources": [
+                {
+                    "type": "siteextensions",
+                    "name": "Microsoft.ApplicationInsights.AzureWebSites",
+                    "apiVersion": "2015-08-01",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', parameters('functionAppName'))]"
+                    ],
+                    "properties": "[concat()]"
+                    
+                }
+            ],
+            "properties": {
+                "siteConfig": {
+                    "alwaysOn": "[not(equals(parameters('sku'), 'Dynamic Y1'))]",
+                    "appSettings": "[concat(parameters('databaseConnectionProperties'), reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties)]"
+                },
+                "name": "[parameters('functionAppName')]",
+                "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "hostingEnvironment": ""
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "[resourceId('microsoft.insights/components/', parameters('functionAppName'))]",
+                "[concat(parameters('functionAppName'),'-database-connection-properties')]"
+            ]
         },
-        "dependsOn": [
-            "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-            "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-            "[resourceId('microsoft.insights/components/', parameters('functionAppName'))]"
-        ]
-    },
-      {
-        "apiVersion": "2018-05-01-preview",
-        "name": "[parameters('functionAppName')]",
-        "type": "microsoft.insights/components",
-        "location": "[parameters('appInsightLocation')]",
-        "tags": {
-          "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('functionAppName'))]": "Resource"
+        {
+            "apiVersion": "2018-05-01-preview",
+            "name": "[parameters('functionAppName')]",
+            "type": "microsoft.insights/components",
+            "location": "[parameters('appInsightLocation')]",
+            "tags": {
+                "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('functionAppName'))]": "Resource"
+            },
+            "properties": {
+                "ApplicationId": "[parameters('functionAppName')]",
+                "Request_Source": "IbizaDevOpsExtensionCreate"
+            }
         },
-        "properties": {
-          "ApplicationId": "[parameters('functionAppName')]",
-          "Request_Source": "IbizaDevOpsExtensionCreate"
-        }
-      },
-	  {
+	    {
             "type": "Microsoft.Web/sites/functions",
             "apiVersion": "2020-06-01",
             "name": "[concat(parameters('functionAppName'),'/', parameters('functions')[copyIndex()].name)]",
