@@ -53,7 +53,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/function-app-properties.json",
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/function-app-properties-template.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -71,7 +71,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/database-connection-properties.json",
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/database-connection-properties-template.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
