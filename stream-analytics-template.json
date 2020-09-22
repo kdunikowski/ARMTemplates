@@ -1,0 +1,87 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "ASAApiVersion": {
+      "type": "string"
+    },
+    "StreamAnalyticsJobName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "metadata": {
+        "description": "Stream Analytics Job Name, can contain alphanumeric characters and hypen and must be 3-63 characters long"
+      }
+    },
+    "Location": {
+      "type": "string"
+    },
+    "DataLocale": {
+      "type": "string"
+    },
+    "OutputErrorPolicy": {
+      "type": "string",
+      "allowedValues": [
+        "Drop",
+        "Stop"
+      ]
+    },
+    "EventsLateArrivalMaxDelayInSeconds": {
+      "type": "int"
+    },
+    "EventsOutOfOrderMaxDelayInSeconds": {
+      "type": "int"
+    },
+    "EventsOutOfOrderPolicy": {
+      "type": "string",
+      "allowedValues": [
+        "Adjust",
+        "Drop"
+      ]
+    },
+    "CompatibilityLevel": {
+      "type": "string",
+      "allowedValues": [
+        "1.0",
+        "1.1",
+        "1.2"
+      ]
+    },
+    "transformation":{
+      "type":"object"
+    },
+    "skuName":{
+      "type":"string"
+    },
+    "jobType":{
+      "type":"string"
+    },
+    "eventHubInputs": {
+        "type":"array"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.StreamAnalytics/StreamingJobs",
+      "apiVersion": "[parameters('ASAApiVersion')]",
+      "name": "[parameters('StreamAnalyticsJobName')]",
+      "location": "[parameters('Location')]",
+      "properties": {
+        "sku": {
+          "name": "[parameters('skuName')]"
+        },
+        "jobType": "[parameters('jobType')]",
+        "eventsOutOfOrderPolicy": "[parameters('EventsOutOfOrderPolicy')]",
+        "outputErrorPolicy": "[parameters('OutputErrorPolicy')]",
+        "eventsOutOfOrderMaxDelayInSeconds": "[parameters('EventsOutOfOrderMaxDelayInSeconds')]",
+        "eventsLateArrivalMaxDelayInSeconds": "[parameters('EventsLateArrivalMaxDelayInSeconds')]",
+        "dataLocale": "[parameters('DataLocale')]",
+        "compatibilityLevel": "[parameters('CompatibilityLevel')]",
+        "transformation": "[parameters('transformation')]",
+        "inputs": "[parameters('eventHubInputs')]",
+        "outputs": [
+        ]
+      }
+    }
+  ]
+}

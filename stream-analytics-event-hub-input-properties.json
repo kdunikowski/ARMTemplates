@@ -1,0 +1,44 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "eventHubs": {
+      "type":"array"
+    }
+  },
+  "resources": [
+  ],
+  "outputs": {
+    "inputs":{
+      "type":"array",
+      "copy": {
+        "count": "[length(parameters('eventHubs'))]",
+        "input": {
+            "name": "[parameters('eventHubs')[copyIndex()].name]",
+            "properties": {
+              "type": "[parameters('eventHubs')[copyIndex()].stream]",
+              "datasource": {
+                "type": "Microsoft.ServiceBus/EventHub",
+                "properties": {
+                  "serviceBusNamespace": "[parameters('eventHubs')[copyIndex()].eventHubNamespaceName]",
+                  "eventHubName": "[parameters('eventHubs')[copyIndex()].eventHubName]",
+                  "consumerGroupName": "[parameters('eventHubs')[copyIndex()].eventHubConsumerGroupName]",
+                  "sharedAccessPolicyName": "[parameters('eventHubs')[copyIndex()].sharedAccessPolicy]",
+                  "sharedAccessPolicyKey": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubs')[copyIndex()].eventHubNamespaceName, parameters('eventHubs')[copyIndex()].eventHubName, parameters('eventHubs')[copyIndex()].sharedAccessPolicy), '2017-04-01').primaryKey]"
+                }
+              },
+              "compression": {
+                "type": "None"
+              },
+              "serialization": {
+                "type": "Json",
+                "properties": {
+                  "encoding": "UTF8"
+                }
+              }
+            }
+        }
+      }
+    }
+  }
+}
