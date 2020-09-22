@@ -4,6 +4,9 @@
     "parameters": {
         "storageAccountName":{
             "type":"string"
+        },
+        "tables": {
+            "type": "array"
         }
     },
     "variables": {},
@@ -41,6 +44,32 @@
                 }
             },
             "dependsOn": []
+      },
+      {
+            "type": "Microsoft.Storage/storageAccounts/tableServices",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(parameters('storageAccountName'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(parameters('storageAccountName'), '/default/',parameters('tables')[copyIndex()])]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/tableServices', parameters('storageAccountName'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ],
+            "copy":{
+                "name": "storage-account-loop",
+				"count": "[length(parameters('tables'))]"
+            }
       }
     ]
 }

@@ -58,6 +58,9 @@
     },
     "eventHubInputs": {
         "type":"array"
+    },
+    "outputs":{
+      "type":"array"
     }
   },
   "resources": [
@@ -79,8 +82,7 @@
         "compatibilityLevel": "[parameters('CompatibilityLevel')]",
         "transformation": "[parameters('transformation')]",
         "inputs": "[parameters('eventHubInputs')]",
-        "outputs": [
-        ]
+        "outputs": "[parameters('outputs')]"
       }
     }
   ]

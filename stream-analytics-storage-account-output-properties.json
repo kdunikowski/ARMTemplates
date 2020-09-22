@@ -1,0 +1,37 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccounts": {
+      "type":"array"
+    }
+  },
+  "resources": [
+  ],
+  "outputs": {
+    "storageOutputs":{
+      "type":"array",
+      "copy": {
+        "count": "[length(parameters('storageAccounts'))]",
+        "input":  {
+            "name": "[parameters('storageAccounts')[copyIndex()].tabl]",
+            "properties": {
+              "datasource": {
+                "type": "Microsoft.Storage/Table",
+                "properties": {
+                  "accountName": "[parameters('storageAccounts')[copyIndex()].accountName]",
+                  "accountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts')[copyIndex()].accountName), '2015-05-01-preview').key1]",
+                  "table": "[parameters('storageAccounts')[copyIndex()].table]",
+                  "partitionKey": "[parameters('storageAccounts')[copyIndex()].partitionKey]",
+                  "rowKey": "[parameters('storageAccounts')[copyIndex()].rowKey]",
+                  "columnsToRemove": null,
+                  "batchSize": "[parameters('storageAccounts')[copyIndex()].batchSize]"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
