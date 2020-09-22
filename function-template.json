@@ -41,7 +41,8 @@
                 },
                 "parameters": {
                     "storageAccountName": {
-						"value": "[parameters('storageAccountName')]"
+						"value": "[parameters('storageAccountName')]",
+                        "tables":[]
                     }
                 }
             }
