@@ -18,7 +18,7 @@
                 "input":
                 {
                     "location":"[parameters('iotHubs')[copyIndex()].location]",
-                    "connectionString": "[concat('HostName=', parameters(parameters('iotHubs')[copyIndex()].iotHubName), '.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=',listKeys(resourceId('Microsoft.Devices/IotHubs/Iothubkeys', parameters('iotHubs')[copyIndex()].iotHubName, 'iothubowner'), '2020-03-01'))]"
+                    "connectionString": "[concat('HostName=', parameters('iotHubs')[copyIndex()].iotHubName, '.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=',listKeys(resourceId('Microsoft.Devices/IotHubs/Iothubkeys', parameters('iotHubs')[copyIndex()].iotHubName, 'iothubowner'), '2020-03-01'))]"
                 }
             }
         }
