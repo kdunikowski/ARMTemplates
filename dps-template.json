@@ -1,0 +1,34 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "dpsName": {
+            "type": "String"
+        },
+        "iotHubs": {
+            "type": "array"
+        },
+        "location": {
+            "type":"string"
+        },
+        "sku": {
+            "type":"object"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Devices/provisioningServices",
+            "apiVersion": "2020-01-01",
+            "name": "[parameters('dpsName')]",
+            "location": "[parameters('location')]",
+            "sku": "[parameters('sku')]",
+            "properties": {
+                "state": "Active",
+                "provisioningState": "Succeeded",
+                "iotHubs": "[parameters('iotHubs')]",
+                "allocationPolicy": "Hashed"
+            }
+        }
+    ]
+}
