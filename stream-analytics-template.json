@@ -77,22 +77,6 @@
         "eventsLateArrivalMaxDelayInSeconds": "[parameters('EventsLateArrivalMaxDelayInSeconds')]",
         "dataLocale": "[parameters('DataLocale')]",
         "compatibilityLevel": "[parameters('CompatibilityLevel')]",
-        "transformation": {
-					"name": "Transformation",
-					"properties": {
-					  "streamingUnits": {
-						"type": "int",
-						"minValue": 1,
-						"maxValue": 192,
-						"metadata": {
-						"description": "Number of Streaming Units"
-						},
-						"allowedValues": [ 1, 3, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108,
-						114, 120, 126, 132, 138, 144, 150, 156, 162, 168, 174, 180, 186, 192 ]
-						},
-						"query": "WITH input AS (\r\n    SELECT\r\n        *,\r\n        CONCAT(deviceId, variable) AS anomalyKey\r\n    FROM\r\n        \"telemetry\" TIMESTAMP BY \"timestamp\"\r\n), AnomalyDetectionStep AS\r\n(\r\n    SELECT\r\n        deviceId,\r\n        variable,\r\n        anomalyKey,\r\n        \"timestamp\",\r\n        EVENTENQUEUEDUTCTIME AS time,\r\n        CAST(value AS float) AS value,\r\n        AnomalyDetection_SpikeAndDip(CAST(value AS float), 95, 120, 'spikesanddips')\r\n            OVER(PARTITION BY anomalyKey LIMIT DURATION(second, 120)) AS SpikeAndDipScores\r\n    FROM input\r\n)\r\n\r\nSELECT\r\n    MAX(value) AS \"max\", MIN(value) AS \"min\", STDEV(value) AS stdDev, MIN(\"timestamp\") AS \"timestamp\", System.TimeStamp() AS time, variable, deviceId\r\nINTO\r\n    oneMinuteTable\r\nFROM\r\n    input\r\nGROUP BY\r\n    time,\r\n    variable,\r\n    deviceId,\r\n    TumblingWindow(Duration(minute, 1))\r\n    \r\nSELECT\r\n    MAX(value) AS \"max\", MIN(value) AS \"min\", STDEV(value) AS stdDev, MIN(\"timestamp\") AS \"timestamp\", System.TimeStamp() AS time, variable, deviceId\r\nINTO\r\n    fiveMinutesTable\r\nFROM\r\n    input\r\nGROUP BY\r\n    time,\r\n    variable,\r\n    deviceId,\r\n    TumblingWindow(Duration(minute, 5))\r\n\r\nSELECT\r\n    MAX(value) AS \"max\", MIN(value) AS \"min\", STDEV(value) AS stdDev, MIN(\"timestamp\") AS \"timestamp\", System.TimeStamp() AS time, variable, deviceId\r\nINTO\r\n    fifteenMinutesTable\r\nFROM\r\n    input\r\nGROUP BY\r\n    time,\r\n    variable,\r\n    deviceId,\r\n    TumblingWindow(Duration(minute, 15))\r\n\r\nSELECT\r\n    MAX(value) AS \"max\", MIN(value) AS \"min\", STDEV(value) AS stdDev, MIN(\"timestamp\") AS \"timestamp\", System.TimeStamp() AS time, variable, deviceId\r\nINTO\r\n    oneHourTable\r\nFROM\r\n    input\r\nGROUP BY\r\n    time,\r\n    variable,\r\n    deviceId,\r\n    TumblingWindow(Duration(hour, 1))\r\n\r\nSELECT\r\n    MAX(value) AS \"max\", MIN(value) AS \"min\", STDEV(value) AS stdDev, MIN(\"timestamp\") AS \"timestamp\", System.TimeStamp() AS time, variable, deviceId\r\nINTO\r\n    fiveHoursTable\r\nFROM\r\n    input\r\nGROUP BY\r\n    time,\r\n    variable,\r\n    deviceId,\r\n    TumblingWindow(Duration(hour, 5))\r\n\r\nSELECT\r\n    MAX(value) AS \"max\", MIN(value) AS \"min\", STDEV(value) AS stdDev, MIN(\"timestamp\") AS \"timestamp\", System.TimeStamp() AS time, variable, deviceId\r\nINTO\r\n    twentyFourHoursTable\r\nFROM\r\n    input\r\nGROUP BY\r\n    time,\r\n    variable,\r\n    deviceId,\r\n    TumblingWindow(Duration(hour, 24))\r\n\r\nSELECT\r\n    deviceId,\r\n    variable,\r\n    \"timestamp\",\r\n    'anomaly' AS category,\r\n    CONCAT('Anomaly detected in ', variable, ' signal for ', deviceId, ' device') AS description,\r\n    CONCAT(deviceId, ':', \"timestamp\") AS id\r\nINTO infoTable\r\nFROM AnomalyDetectionStep\r\nWHERE\r\n    CAST(GetRecordPropertyValue(SpikeAndDipScores, 'IsAnomaly') AS bigint) = 1"
-					}
-        },
         "inputs": "[parameters('eventHubInputs')]",
         "outputs": [
         ]
