@@ -67,7 +67,7 @@
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
             ],
             "copy":{
-                "name": "storage-account-loop",
+                "name": "[parameters('storageAccountName')]",
 				"count": "[length(parameters('tables'))]"
             }
       }
