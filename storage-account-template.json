@@ -67,7 +67,7 @@
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
             ],
             "copy":{
-                "name": "[parameters('storageAccountName')]",
+                "name": "storage-table-deploy",
 				"count": "[length(parameters('tables'))]"
             }
       }
