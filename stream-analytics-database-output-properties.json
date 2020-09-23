@@ -1,0 +1,36 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "databases": {
+      "type":"array"
+    }
+  },
+  "resources": [
+  ],
+  "outputs": {
+    "databaseOutputs":{
+      "type":"array",
+      "copy": {
+        "count": "[length(parameters('databases'))]",
+        "input":  {
+            "name": "[parameters('databases')[copyIndex()].table]",
+            "properties": {
+              "datasource": {
+                "type": "Microsoft.Storage/DocumentD",
+                "properties": {
+                  "accountId": "[parameters('databases')[copyIndex()].accountId]",
+                  "accountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('databases')[copyIndex()].accountId), '2015-05-01-preview').key1]",
+                  "database": "[parameters('databases')[copyIndex()].database]",
+                  "collectionNamePattern": "[parameters('databases')[copyIndex()].collectionNamePattern]",
+                  "partitionKey": "[parameters('databases')[copyIndex()].partitionKey]",
+                  "documentId": "[parameters('databases')[copyIndex()].documentId]"
+                }
+              }
+            }
+          }
+        
+      }
+    }
+  }
+}
