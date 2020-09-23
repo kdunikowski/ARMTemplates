@@ -14,7 +14,7 @@
       "copy": {
         "count": "[length(parameters('databases'))]",
         "input":  {
-            "name": "[parameters('databases')[copyIndex()].table]",
+            "name": "[parameters('databases')[copyIndex()].collectionNamePattern]",
             "properties": {
               "datasource": {
                 "type": "Microsoft.Storage/DocumentD",
