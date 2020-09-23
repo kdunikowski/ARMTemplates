@@ -18,7 +18,7 @@
                 "input":
                 {
                     "name": "[parameters('accessKeyProperties')[copyIndex()].name]",
-                    "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('accessKeyProperties')[copyIndex()].accountName), '2015-05-01-preview').key1]"
+                    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('accessKeyProperties')[copyIndex()].resourceName,';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('accessKeyProperties')[copyIndex()].resourceName), '2015-05-01-preview').key1)]"
                 }
             }
         }
