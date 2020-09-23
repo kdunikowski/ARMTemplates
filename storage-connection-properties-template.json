@@ -1,0 +1,26 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "accessKeyProperties": {
+            "type":"array"
+        }
+    },
+    "variables": {
+    },
+    "resources": 
+    [],
+    "outputs" : {
+        "properties":{
+            "type":"array",
+             "copy": {
+                "count": "[length(parameters('accessKeyProperties'))]",
+                "input":
+                {
+                    "name": "[parameters('accessKeyProperties')[copyIndex()].name]",
+                    "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('accessKeyProperties')[copyIndex()].accountName), '2015-05-01-preview').key1]"
+                }
+            }
+        }
+    }
+}

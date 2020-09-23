@@ -25,7 +25,10 @@
 			"type": "array"
 		},
         "databaseConnectionProperties": {
-            "type":"array"
+            "type": "array"
+        },
+        "storageConnectionProperties": {
+            "type": "array"
         }
     },
     "resources": [
@@ -88,6 +91,24 @@
             },
             "dependsOn": ["[concat(parameters('functionAppName'),'storage')]"]
         },
+                {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('functionAppName'),'-storage-connection-properties')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/storage-connection-properties-template.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "storageAccounts": {
+						"value": "[parameters('storageConnectionProperties')]"
+                    }
+                }
+            },
+            "dependsOn": ["[concat(parameters('functionAppName'),'storage')]"]
+        },
         {
             "type": "Microsoft.Web/serverfarms",
             "sku": {
@@ -125,7 +146,7 @@
             "properties": {
                 "siteConfig": {
                     "alwaysOn": "[not(equals(parameters('sku'), 'Dynamic Y1'))]",
-                    "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties.value, reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties.value)]"
+                    "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties.value, reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties.value, reference(concat(parameters('functionAppName'),'-storage-connection-properties')).outputs.properties.value)]"
                 },
                 "name": "[parameters('functionAppName')]",
                 "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
