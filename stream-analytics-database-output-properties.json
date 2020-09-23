@@ -17,7 +17,7 @@
             "name": "[parameters('databases')[copyIndex()].collectionNamePattern]",
             "properties": {
               "datasource": {
-                "type": "Microsoft.Storage/DocumentD",
+                "type": "Microsoft.Storage/DocumentDB",
                 "properties": {
                   "accountId": "[parameters('databases')[copyIndex()].accountId]",
                   "accountKey": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databases')[copyIndex()].accountId), '2020-03-01').primaryMasterKey]",
