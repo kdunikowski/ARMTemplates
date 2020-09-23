@@ -14,7 +14,7 @@
       "copy": {
         "count": "[length(parameters('storageAccounts'))]",
         "input":  {
-            "name": "[parameters('storageAccounts')[copyIndex()].tabl]",
+            "name": "[parameters('storageAccounts')[copyIndex()].table]",
             "properties": {
               "datasource": {
                 "type": "Microsoft.Storage/Table",
