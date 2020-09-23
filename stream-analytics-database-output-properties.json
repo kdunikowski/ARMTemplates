@@ -20,7 +20,7 @@
                 "type": "Microsoft.Storage/DocumentD",
                 "properties": {
                   "accountId": "[parameters('databases')[copyIndex()].accountId]",
-                  "accountKey": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databases')[copyIndex()].accountId), '2020-03-01').key1]",
+                  "accountKey": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databases')[copyIndex()].accountId), '2020-03-01').primaryMasterKeys]",
                   "database": "[parameters('databases')[copyIndex()].database]",
                   "collectionNamePattern": "[parameters('databases')[copyIndex()].collectionNamePattern]",
                   "partitionKey": "[parameters('databases')[copyIndex()].partitionKey]",
