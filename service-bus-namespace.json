@@ -70,7 +70,7 @@
 					"location": {
 						"value": "[parameters('location')]"
 					},
-					"queue": {
+					"queue_name": {
 						"value": "[parameters('queues')[copyIndex()].name]"
 					},
 					"authorizationRules": {
