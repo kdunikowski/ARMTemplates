@@ -60,7 +60,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/service-bus-namespace.json",
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/service-bus-queue.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -79,7 +79,7 @@
 				}
 			},
 			"copy":{
-				"name": "service-bus-namespace-loop",
+				"name": "service-bus-queue-loop",
 				"count": "[length(parameters('queues'))]"
 			},
 			"dependsOn": [
