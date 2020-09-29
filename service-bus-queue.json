@@ -23,7 +23,6 @@
             "name": "[concat(parameters('service_bus_namespace_name'), '/', parameters('queue_name'))]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('service_bus_namespace_name'))]"
             ],
             "properties": {
                 "lockDuration": "PT30S",
