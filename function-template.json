@@ -31,6 +31,9 @@
             "type": "array"
         }
     },
+    "variables":{
+        "empty": "[]"
+    },
     "resources": [
         {
             "apiVersion": "2017-05-10",
@@ -77,6 +80,7 @@
             "apiVersion": "2017-05-10",
             "name": "[concat(parameters('functionAppName'),'-database-connection-properties')]",
             "type": "Microsoft.Resources/deployments",
+            "condition": "[greater(length(parameters('databaseConnectionProperties')), 0)]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -91,10 +95,11 @@
             },
             "dependsOn": ["[concat(parameters('functionAppName'),'storage')]"]
         },
-                {
+        {
             "apiVersion": "2017-05-10",
             "name": "[concat(parameters('functionAppName'),'-storage-connection-properties')]",
             "type": "Microsoft.Resources/deployments",
+            "condition": "[greater(length(parameters('storageConnectionProperties')), 0)]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -146,7 +151,8 @@
             "properties": {
                 "siteConfig": {
                     "alwaysOn": "[not(equals(parameters('sku'), 'Dynamic Y1'))]",
-                    "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties.value, reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties.value, reference(concat(parameters('functionAppName'),'-storage-connection-properties')).outputs.properties.value)]"
+                    "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties.value, if(greater(length(parameters('databaseConnectionProperties')), 0), concat(parameters('functionAppName'),'-database-connection-properties').outputs.properties.value, variables('empty')),
+                    if(greater(length(parameters('storageConnectionProperties')), 0), concat(parameters('functionAppName'),'-storage-connection-properties').outputs.properties.value, variables('empty')))]"
                 },
                 "name": "[parameters('functionAppName')]",
                 "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
