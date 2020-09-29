@@ -83,6 +83,7 @@
 				"count": "[length(parameters('queues'))]"
 			},
 			"dependsOn": [
+                "[parameters('service_bus_namespace_name')]"
 			]
         }
     ]
