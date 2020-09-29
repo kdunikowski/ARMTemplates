@@ -32,7 +32,7 @@
         }
     },
     "variables":{
-        "empty": "[]"
+        "empty": []
     },
     "resources": [
         {
