@@ -47,8 +47,7 @@
             "name": "[concat(parameters('service_bus_namespace_name'), '/',parameters('queue_name'), '/', parameters('authorizationRules')[copyIndex()].name)]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('service_bus_namespace_name'), parameters('queue_name'))]",
-                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('service_bus_namespace_name'))]"
+                "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('service_bus_namespace_name'), parameters('queue_name'))]"
             ],
             "properties": {
                 "rights": "[parameters('authorizationRules')[copyIndex()].policy]"
