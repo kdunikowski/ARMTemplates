@@ -1,0 +1,63 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "service_bus_namespace_name": {
+            "type": "String"
+        },
+           "location": {
+            "type": "String"
+        },
+           "queue_name": {
+            "type": "String"
+        },
+           "authorizationRules": {
+            "type": "array"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('service_bus_namespace_name'), '/', parameters('queue_name'))]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('service_bus_namespace_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT30S",
+                "maxSizeInMegabytes": 5120,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "PT1H",
+                "deadLetteringOnMessageExpiration": false,
+                "enableBatchedOperations": true,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 100,
+                "status": "Active",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('service_bus_namespace_name'), '/',parameters('queue_name'), '/', parameters('authorizationRules')[copyIndex()].name)]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('service_bus_namespace_name'), parameters('queue_name'))]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('service_bus_namespace_name'))]"
+            ],
+            "properties": {
+                "rights": "[parameters('authorizationRules')[copyIndex()].policy]"
+            },
+             "copy": {
+					"name": "sb-queue-authorizationRules-loop",
+					"count": "[length(parameters('authorizationRules'))]",
+                    "mode": "serial"
+			}
+        }
+    ]
+}
