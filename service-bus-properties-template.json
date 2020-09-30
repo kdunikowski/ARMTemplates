@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        
+        "serviceBusNamespaceName": {
+            "type":"String"
+        },
+        "serviceBusQueue": {
+            "type":"string"
+        },
+        "serviceBusQueuePolicyName": {
+            "type":"string"
+        }
+    },
+    "variables": {
+    },
+    "resources": 
+    [],
+    "outputs" : {
+        "properties":{
+            "type":"array",
+             "value": [
+                 {
+                    "name":"SERVICE_BUS_QUEUE_ENDPOINT",
+                    "value":"[concat('sb://', parameters('serviceBusNamespaceName'), '.servicebus.windows.net/', parameters('serviceBusQueue'))]"
+                },
+                {
+                    "name":"SERVICE_BUS_QUEUE_POLICY_KEY",
+                    "value":"[listKeys(resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), parameters('serviceBusQueue'),parameters('serviceBusQueuePolicyName')), '2017-04-01').primaryKey]"
+                },
+                {
+                    "name":"SERVICE_BUS_QUEUE_POLICY_NAME",
+                    "value":"[parameters('serviceBusQueuePolicyName')]"
+                }
+            ]
+        }
+    }
+}

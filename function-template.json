@@ -29,6 +29,9 @@
         },
         "storageConnectionProperties": {
             "type": "array"
+        },
+        "serviceBusConnectionProperties": {
+            "type": "object"
         }
     },
     "variables":{
@@ -115,6 +118,31 @@
             "dependsOn": ["[concat(parameters('functionAppName'),'storage')]"]
         },
         {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('functionAppName'),'-service-bus-properties')]",
+            "type": "Microsoft.Resources/deployments",
+            "condition": "[greater(length(parameters('storageConnectionProperties')), 0)]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/service-bus-properties-template.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serviceBusNamespaceName": {
+						"value": "[parameters('serviceBusConnectionProperties').serviceBusNamespaceName]"
+                    },
+                     "serviceBusQueue": {
+						"value": "[parameters('serviceBusConnectionProperties').serviceBusQueue]"
+                    },
+                     "serviceBusQueuePolicyName": {
+						"value": "[parameters('serviceBusConnectionProperties').serviceBusQueuePolicyName]"
+                    }
+                }
+            },
+            "dependsOn": []
+        },
+        {
             "type": "Microsoft.Web/serverfarms",
             "sku": {
                 "Tier": "[first(split(parameters('sku'), ' '))]",
@@ -151,7 +179,8 @@
             "properties": {
                 "siteConfig": {
                     "alwaysOn": "[not(equals(parameters('sku'), 'Dynamic Y1'))]",
-                    "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties.value, if(greater(length(parameters('databaseConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties.value, variables('empty')), if(greater(length(parameters('storageConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-storage-connection-properties')).outputs.properties.value, variables('empty')))]"
+                    "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties.value, if(greater(length(parameters('databaseConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties.value, variables('empty')), if(greater(length(parameters('storageConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-storage-connection-properties')).outputs.properties.value, variables('empty')),
+                    if(greater(length(parameters('serviceBusConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-service-bus-properties')).outputs.properties.value, variables('empty')))]"
                 },
                 "name": "[parameters('functionAppName')]",
                 "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
