@@ -121,7 +121,7 @@
             "apiVersion": "2017-05-10",
             "name": "[concat(parameters('functionAppName'),'-service-bus-properties')]",
             "type": "Microsoft.Resources/deployments",
-            "condition": "[greater(length(parameters('storageConnectionProperties')), 0)]",
+            "condition": "[greater(length(parameters('serviceBusConnectionProperties')), 0)]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
