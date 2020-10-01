@@ -221,12 +221,12 @@
                         "name": "req",
                         "webHookType": "genericJson",
                         "direction": "in",
-                        "type": "httpTrigger"
+                        "type": "[parameters('functions')[copyIndex()].inTriggerType]"
                         },
                         {
                         "name": "res",
                         "direction": "out",
-                        "type": "http"
+                        "type": "[parameters('functions')[copyIndex()].outTriggerType]"
                         }
                     ]
                 }

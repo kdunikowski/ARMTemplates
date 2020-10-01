@@ -1,0 +1,67 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "iotHubTopicName": {
+            "type": "String"
+        },
+        "iotHubName": {
+            "type": "String"
+        },
+        "eventSubscriptionName": {
+            "type": "String"
+        },
+        "outputFunctionAppName": {
+            "type":"String"
+        },
+        "functionName": {
+            "type":"string"
+        },
+        "includedEventTypes": {
+            "type": "array"
+        }
+
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.EventGrid/systemTopics",
+            "apiVersion": "2020-04-01-preview",
+            "name": "[parameters('iotHubTopicName')]",
+            "location": "westeurope",
+            "properties": {
+                "source": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Devices/IoTHubs/', parameters('iotHubName'))]",
+                "topicType": "Microsoft.Devices.IoTHubs"
+            }
+        },
+        {
+            "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
+            "apiVersion": "2020-04-01-preview",
+            "name": "[concat(parameters('iotHubTopicName'), '/',parameters('eventSubscriptionName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.EventGrid/systemTopics', parameters('iotHubTopicName'))]"
+            ],
+            "properties": {
+                "destination": {
+                    "properties": {
+                        "resourceId": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Web/sites/',parameters('outputFunctionAppName'),'/functions/', parameters('functionName'))]",
+                        "maxEventsPerBatch": 1,
+                        "preferredBatchSizeInKilobytes": 64
+                    },
+                    "endpointType": "AzureFunction"
+                },
+                "filter": {
+                    "includedEventTypes": "[parameters('includedEventTypes')]"
+                },
+                "labels": [
+                    "[parameters('outputFunctionAppName')]"
+                ],
+                "eventDeliverySchema": "EventGridSchema",
+                "retryPolicy": {
+                    "maxDeliveryAttempts": 30,
+                    "eventTimeToLiveInMinutes": 1440
+                }
+            }
+        }
+    ]
+}
