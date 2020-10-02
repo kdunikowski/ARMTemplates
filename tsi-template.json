@@ -1,0 +1,107 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "environmentName": {
+        "type": "string",
+        "maxLength": 90
+      },
+      "environmentSkuName": {
+        "type": "string"
+      },
+      "environmentSkuCapacity": {
+        "type": "int",
+        "minValue": 1,
+        "maxValue": 10
+      },
+      "storageAccountName": {
+        "type": "string"
+      },
+      "eventSources" : {
+          "type": "array"
+      },
+      "accessPolicies": {
+        "type": "array"
+      },
+      "location": {
+        "type": "string"
+      },
+      "timeSeriesIdProperties": {
+          "type": "array"
+      }
+    },
+    "variables": {},
+    "resources": [
+      {
+        "type": "Microsoft.TimeSeriesInsights/environments",
+        "name": "[parameters('environmentName')]",
+        "apiVersion": "2020-05-15",
+        "location": "[parameters('location')]",
+        "properties": {
+            "storageConfiguration": {
+                    "accountName": "[parameters('storageAccountName')]",
+                    "managementKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1]"
+                },
+                "timeSeriesIdProperties": "[parameters('timeSeriesIdProperties')]"
+        },
+        "sku": {
+          "name": "[parameters('environmentSkuName')]",
+          "capacity": "[parameters('environmentSkuCapacity')]"
+        },
+        "kind": "Gen2",
+        "resources": [
+        ]
+    },
+    {
+        "type": "Microsoft.TimeSeriesInsights/environments/eventSources",
+        "name": "[concat(parameters('environmentName'),'/', parameters('eventSources')[copyIndex()].eventSourceName)]",
+        "apiVersion": "2017-11-15",
+        "location": "[parameters('eventSources')[copyIndex()].location]",
+        "kind": "Microsoft.EventHub",
+        
+        "properties": {
+            "eventSourceResourceId": "[concat(resourceId('Microsoft.EventHub/Namespaces', parameters('eventSources')[copyIndex()].eventHubNamespaceName), '/eventhubs/', parameters('eventSources')[copyIndex()].eventHubName)]",
+            "eventHubName": "[parameters('eventSources')[copyIndex()].eventHubName]",
+            "serviceBusNamespace": "[parameters('eventSources')[copyIndex()].eventHubNamespaceName]",
+            "consumerGroupName": "[parameters('eventSources')[copyIndex()].consumerGroupName]",
+            "keyName": "[parameters('eventSources')[copyIndex()].eventSourceKeyName]",
+            "sharedAccessKey": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventSources')[copyIndex()].eventHubNamespaceName, parameters('eventSources')[copyIndex()].eventHubName, parameters('eventSources')[copyIndex()].eventSourceKeyName), '2017-04-01').primaryKey]",
+            "timestampPropertyName": "[parameters('eventSources')[copyIndex()].eventSourceTimestampPropertyName]"
+        },
+        "dependsOn": [
+            "[parameters('environmentName')]"
+        ],
+        "copy": {
+          "name": "eventSourceCopy",
+          "count": "[length(parameters('eventSources'))]"
+        }
+      },
+      {
+        "condition": "[not(empty(parameters('accessPolicies')))]",
+        "type": "Microsoft.TimeSeriesInsights/environments/accessPolicies",
+        "name": "[concat(parameters('environmentName'), '/', parameters('accessPolicies')[copyIndex()].name)]",
+        "apiVersion": "2017-11-15",
+        "properties": {
+          "principalObjectId": "[parameters('accessPolicies')[copyIndex()].principalObjectId]",
+          "roles": "[parameters('accessPolicies')[copyIndex()].roles]"
+        },
+        "copy": {
+          "name": "accessPolicyLoop",
+          "count": "[if(empty(parameters('accessPolicies')), 1, length(parameters('accessPolicies')))]"
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.TimeSeriesInsights/environments/', parameters('environmentName'))]"
+        ]
+      }
+    ],
+    "outputs": {
+        "dataAccessFqdn":{
+            "type":"object",
+
+            "value": {
+                "name": "EnvironmentFqdn",
+                "value": "[reference(resourceId('Microsoft.TimeSeriesInsights/environments', parameters('environmentName')),'2020-05-15').dataAccessFqdn]"
+            }
+        }
+    }
+  }

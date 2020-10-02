@@ -32,6 +32,9 @@
         },
         "serviceBusConnectionProperties": {
             "type": "object"
+        },
+        "tsiConnectionProperties": {
+            "type":"object"
         }
     },
     "variables":{
@@ -180,7 +183,7 @@
                 "siteConfig": {
                     "alwaysOn": "[not(equals(parameters('sku'), 'Dynamic Y1'))]",
                     "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties.value, if(greater(length(parameters('databaseConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties.value, variables('empty')), if(greater(length(parameters('storageConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-storage-connection-properties')).outputs.properties.value, variables('empty')),
-                    if(greater(length(parameters('serviceBusConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-service-bus-properties')).outputs.properties.value, variables('empty')))]"
+                    if(greater(length(parameters('serviceBusConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-service-bus-properties')).outputs.properties.value, variables('empty')),parameters('tsiConnectionProperties'))]"
                 },
                 "name": "[parameters('functionAppName')]",
                 "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
