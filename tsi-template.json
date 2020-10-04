@@ -99,8 +99,11 @@
             "type":"array",
 
             "value": [
+                {
+
                 "name": "EnvironmentFqdn",
                 "value": "[reference(resourceId('Microsoft.TimeSeriesInsights/environments', parameters('environmentName')),'2020-05-15').dataAccessFqdn]"
+                }
             ]
         }
     }
