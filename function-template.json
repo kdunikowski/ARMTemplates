@@ -34,7 +34,7 @@
             "type": "object"
         },
         "tsiConnectionProperties": {
-            "type":"object"
+            "type":"array"
         }
     },
     "variables":{
