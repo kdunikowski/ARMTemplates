@@ -1,0 +1,26 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "eventHubConnectionProperties": {
+            "type":"array"
+        }
+    },
+    "variables": {
+    },
+    "resources": 
+    [],
+    "outputs" : {
+        "properties":    { 
+            "type":"array",
+            "copy": {
+                "count": "[length(parameters('eventHubConnectionProperties'))]",
+                "input":
+                {
+                    "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubConnectionProperties')[copyIndex()].eventHubNamespace, parameters('eventHubConnectionProperties')[copyIndex()].eventHubName, parameters('eventHubConnectionProperties')[copyIndex()].eventHubAuthRule), '2017-04-01').primaryConnectionString]",
+                    "name": "[parameters('eventHubConnectionProperties')[copyIndex()].name]"
+                }
+            }
+        }
+    }
+}

@@ -30,6 +30,9 @@
         "databaseConnectionProperties": {
             "type": "array"
         },
+        "eventHubConnectionProperties": {
+            "type": "array"
+        },
         "storageConnectionProperties": {
             "type": "array"
         },
@@ -92,7 +95,7 @@
             "apiVersion": "2017-05-10",
             "name": "[concat(parameters('functionAppName'),'-database-connection-properties')]",
             "type": "Microsoft.Resources/deployments",
-            "condition": "[greater(length(parameters('databaseConnectionProperties')), 0)]",
+            "condition": "[not(empty(parameters('databaseConnectionProperties')))]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -109,9 +112,28 @@
         },
         {
             "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('functionAppName'),'-eventHub-connection-properties')]",
+            "type": "Microsoft.Resources/deployments",
+            "condition": "[not(empty(parameters('eventHubConnectionProperties')))]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/eventhub-connection-properties.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "accessKeyProperties": {
+						"value": "[parameters('eventHubConnectionProperties')]"
+                    }
+                }
+            },
+            "dependsOn": ["[concat(parameters('functionAppName'),'storage')]"]
+        },
+        {
+            "apiVersion": "2017-05-10",
             "name": "[concat(parameters('functionAppName'),'-storage-connection-properties')]",
             "type": "Microsoft.Resources/deployments",
-            "condition": "[greater(length(parameters('storageConnectionProperties')), 0)]",
+            "condition": "[not(empty(parameters('storageConnectionProperties')))]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -130,7 +152,7 @@
             "apiVersion": "2017-05-10",
             "name": "[concat(parameters('functionAppName'),'-service-bus-properties')]",
             "type": "Microsoft.Resources/deployments",
-            "condition": "[greater(length(parameters('serviceBusConnectionProperties')), 0)]",
+            "condition": "[not(empty(parameters('serviceBusConnectionProperties')))]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -176,8 +198,8 @@
             "properties": {
                 "siteConfig": {
                     "alwaysOn": "[not(equals(parameters('sku'), 'Dynamic Y1'))]",
-                    "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties.value, if(greater(length(parameters('databaseConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties.value, variables('empty')), if(greater(length(parameters('storageConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-storage-connection-properties')).outputs.properties.value, variables('empty')),
-                    if(greater(length(parameters('serviceBusConnectionProperties')), 0), reference(concat(parameters('functionAppName'),'-service-bus-properties')).outputs.properties.value, variables('empty')),parameters('tsiConnectionProperties'))]"
+                    "appSettings": "[concat(reference(concat(parameters('functionAppName'),'-properties')).outputs.properties.value, if(not(empty(parameters('databaseConnectionProperties'))), reference(concat(parameters('functionAppName'),'-database-connection-properties')).outputs.properties.value, variables('empty')), if(not(empty(parameters('storageConnectionProperties'))), reference(concat(parameters('functionAppName'),'-storage-connection-properties')).outputs.properties.value, variables('empty')),
+                    if(not(empty(parameters('serviceBusConnectionProperties'))), reference(concat(parameters('functionAppName'),'-service-bus-properties')).outputs.properties.value, variables('empty')),if(not(empty(parameters('eventHubConnectionProperties'))), reference(concat(parameters('functionAppName'),'-eventhub-connection-properties')).outputs.properties.value, variables('empty')),parameters('tsiConnectionProperties'))]"
                 },
                 "name": "[parameters('functionAppName')]",
                 "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
