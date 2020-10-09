@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+	  "storageAccountName": {
+        "value": "iotbackbteststor123"
+      },
+      "environmentName": {
+        "value": "Iotbackbonetsistage"
+      },
+      "environmentSkuName": {
+        "value": "L1"
+      },
+      "environmentSkuCapacity": {
+        "value": 1
+      },
+      "location": {
+        "value": "WestEurope"
+      },
+      "timeSeriesIdProperties": {
+          "value": [
+            {
+              "name": "deviceId",
+              "type": "string"
+            }
+          ]
+      },
+      "eventSources": {
+          "value": [
+            {
+              "eventSourceName":  "telemetryeventhub",
+              "eventSourceTimestampPropertyName":  "deviceId",
+              "eventSourceKeyName": "testautrule",
+              "eventHubNamespaceName":"iot-backbone-event-hub-test",
+              "eventHubName": "iotbackeventhubb",
+              "consumerGroupName": "Default",
+              "location":"westeurope"
+            }
+          ]
+      },
+      "accessPolicies": {
+          "value":[
+            {
+              "name":"testaccesspolicy",
+              "principalObjectId":"defa01dd-6b7e-4a56-82c6-ae6100b4ae12",
+              "roles":["Contributor"]
+            },
+            {
+              "name":"testaccesspolicy2",
+              "principalObjectId":"fd631861-0a31-4c49-9769-fefd9cffab55",
+              "roles":["Contributor"]
+            },  
+             {
+              "name":"testaccesspolicy3",
+              "principalObjectId":"2deb222a-4ff3-4f27-96e3-9ef2e195d5dc",
+              "roles":["Contributor"]
+            }
+          ]
+      }
+    }
+}
