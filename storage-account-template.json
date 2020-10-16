@@ -19,10 +19,10 @@
             "type": "int"
         },
         "skuName": {
-            "type":"string",
+            "type":"string"
         },
         "skuTier": {
-            "type":"string",
+            "type":"string"
         },
         "kind": {
             "type":"String"
@@ -154,6 +154,14 @@
                                         }
                                     }
                                 }
+                            },   
+                            "filters": {
+                                "prefixMatch": [
+                                ],
+                                "blobTypes": [
+                                ],
+                                "blobIndexMatch": [
+                                ]
                             }
                         }
                     ]
