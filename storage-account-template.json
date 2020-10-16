@@ -147,6 +147,9 @@
                             "name": "[parameters('deletePolicyName')]",
                             "type": "Lifecycle",
                             "definition": {
+                                "filters": {
+                                    "blobTypes": [ "blockBlob" ]
+                                },
                                 "actions": {
                                     "baseBlob": {
                                         "delete": {
@@ -154,14 +157,6 @@
                                         }
                                     }
                                 }
-                            },   
-                            "filters": {
-                                "prefixMatch": [
-                                ],
-                                "blobTypes": [
-                                ],
-                                "blobIndexMatch": [
-                                ]
                             }
                         }
                     ]
