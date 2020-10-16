@@ -62,10 +62,10 @@
 						"value": "[parameters('storageAccountName')]"
                     },
                      "tables":{
-                         "value":["Default"]
+                         "value":["default"]
                      },
                      "blobContainers": {
-                        "value": ["Default"]
+                        "value": ["default"]
                     },
                     "deletePolicyDays": {
                         "value": 0
