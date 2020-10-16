@@ -126,6 +126,10 @@
             "type": "Microsoft.Storage/storageAccounts/managementPolicies",
             "apiVersion": "2019-06-01",
             "condition":"[not(empty(parameters('deletePolicyName')))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccountName'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ],
             "properties": {
                 "policy": {
                     "rules": [
