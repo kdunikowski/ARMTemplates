@@ -7,6 +7,15 @@
         },
         "tables": {
             "type": "array"
+        },
+        "blobContainers": {
+            "type": "array"
+        },
+        "deletePolicyName": {
+            "type": "string"
+        },
+        "deletePolicyDays": {
+            "type": "int"
         }
     },
     "variables": {},
@@ -59,9 +68,30 @@
             }
         },
         {
-            "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccountName'), '/default/',parameters('tables')[copyIndex()])]",
+            "name": "[concat(parameters('storageAccountName'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ],
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                },
+                "deleteRetentionPolicy": {
+                    "enabled": false
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+            "condition":"[not(empty(parameters('tables')))]",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(parameters('storageAccountName'), '/default/', parameters('tables')[copyIndex()])]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts/tableServices', parameters('storageAccountName'), 'default')]",
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
@@ -70,6 +100,51 @@
                 "name": "storage-table-deploy",
 				"count": "[length(parameters('tables'))]"
             }
-      }
+      },
+      {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "condition":"[not(empty(parameters('blobContainers')))]",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(parameters('storageAccountName'), '/default/', parameters('blobContainers')[copyIndex()])]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccountName'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ],
+            "properties": {
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            },
+            "copy":{
+                "name": "storage-containers-deploy",
+				"count": "[length(parameters('blobContainers'))]"
+            }
+        },
+        {
+            "name": "default",
+            "type": "Microsoft.Storage/storageAccounts/managementPolicies",
+            "apiVersion": "2019-06-01",
+            "condition":"[not(empty(parameters('deletePolicyName')))]",
+            "properties": {
+                "policy": {
+                    "rules": [
+                        {
+                            "enabled": "true",
+                            "name": "[parameters('deletePolicyName')]",
+                            "type": "Lifecycle",
+                            "definition": {
+                                "actions": {
+                                    "baseBlob": {
+                                        "delete": {
+                                        "daysAfterModificationGreaterThan": "[parameters('deletePolicyDays')]"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+            }
     ]
 }
