@@ -65,7 +65,7 @@
                          "value":["Default"]
                      },
                      "blobContainers": {
-                        "value": "[]"
+                        "value": []
                     },
                     "deletePolicyName": {
                         "value": ""
