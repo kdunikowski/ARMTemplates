@@ -122,7 +122,7 @@
             }
         },
         {
-            "name": "default",
+            "name": "[concat(parameters('storageAccountName'),'/default')]",
             "type": "Microsoft.Storage/storageAccounts/managementPolicies",
             "apiVersion": "2019-06-01",
             "condition":"[not(empty(parameters('deletePolicyName')))]",
