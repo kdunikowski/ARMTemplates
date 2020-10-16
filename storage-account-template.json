@@ -12,6 +12,7 @@
             "type": "array"
         },
         "deletePolicyName": {
+            "defaultValue":"",
             "type": "string"
         },
         "deletePolicyDays": {

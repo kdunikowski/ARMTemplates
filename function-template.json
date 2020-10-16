@@ -67,9 +67,6 @@
                      "blobContainers": {
                         "value": []
                     },
-                    "deletePolicyName": {
-                        "value": ""
-                    },
                     "deletePolicyDays": {
                         "value": 0
                     }
