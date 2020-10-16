@@ -17,6 +17,15 @@
         },
         "deletePolicyDays": {
             "type": "int"
+        },
+        "skuName": {
+            "type":"string",
+        },
+        "skuTier": {
+            "type":"string",
+        },
+        "kind": {
+            "type":"String"
         }
     },
     "variables": {},
@@ -24,10 +33,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts",
             "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
+                "name": "[parameters('skuName')]",
+                "tier": "[parameters('skuTier')]"
             },
-            "kind": "Storage",
+            "kind": "[parameters('kind')]",
             "name": "[parameters('storageAccountName')]",
             "apiVersion": "2018-07-01",
             "location": "[resourceGroup().location]",

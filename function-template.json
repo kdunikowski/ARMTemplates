@@ -69,6 +69,15 @@
                     },
                     "deletePolicyDays": {
                         "value": 0
+                    },
+                    "skuName": {
+                        "value": "Standard_LRS"
+                    },
+                    "skuTier": {
+                        "value": "Standard"
+                    },
+                    "kind": {
+                        "value": "Storage"
                     }
                 }
             }
