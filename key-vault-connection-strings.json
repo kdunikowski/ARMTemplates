@@ -17,7 +17,8 @@
     "outputs" : {
         "eventHubs":{
             "type":"array",
-             "copy": {
+            "condition":"[not(empty(parameters('eventHubs')))]",
+            "copy": {
                 "count": "[length(parameters('eventHubs'))]",
                 "input": {
                     "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubs')[copyIndex()].eventHubNamespace, parameters('eventHubs')[copyIndex()].eventHubName, parameters('eventHubs')[copyIndex()].eventHubAuthRule), '2017-04-01').primaryConnectionString]",
@@ -27,6 +28,7 @@
         },
         "functionApps": {
             "type":"array",
+            "condition":"[not(empty(parameters('functionApps')))]",
             "copy": {
                 "count":"[length(parameters('functionApps'))]",
                 "input": {
@@ -37,6 +39,7 @@
         },
         "iotHubs": {
             "type":"array",
+            "condition":"[not(empty(parameters('iotHubs')))]",
             "copy": {
                 "count":"[length(parameters('iotHubs'))]",
                 "input": {
