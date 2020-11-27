@@ -7,6 +7,9 @@
         },
         "functionApps": {
             "type":"array"
+        },
+        "iotHubs": {
+            "type": "array"
         }
     },
     "variables": {},
@@ -29,6 +32,17 @@
                 "input": {
                      "value": "[listkeys(concat('Microsoft.Web/sites/', parameters('functionApps')[copyIndex()].functionName, '/host/default/'),'2016-08-01').functionKeys.default]",
                      "name":"[parameters('functionApps')[copyIndex()].name]"
+                }
+            }
+        },
+        "iotHubs": {
+            "type":"array",
+            "copy": {
+                "count":"[length(parameters('iotHubs'))]",
+                "input": {
+                    "value": "[concat('HostName=', parameters('iotHubs')[copyIndex()].iotHubName, '.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=',listKeys(resourceId('Microsoft.Devices/IotHubs/Iothubkeys', parameters('iotHubs')[copyIndex()].iotHubName, parameters('iotHubs')[copyIndex()].policyName), '2020-03-01').primaryKey)]",
+                    "name":"[ parameters('iotHubs')[copyIndex()].name]"
+ 
                 }
             }
         }
