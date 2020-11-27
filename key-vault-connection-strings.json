@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "eventHubs": {
+            "type":"array"
+        },
+        "functionApps": {
+            "type":"array"
+        }
+    },
+    "variables": {},
+    "resources": [],
+    "outputs" : {
+        "eventHubs":{
+            "type":"array",
+             "copy": {
+                "count": "[length(parameters('eventHubs'))]",
+                "input": {
+                    "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubs')[copyIndex()].eventHubNamespace, parameters('eventHubs')[copyIndex()].eventHubName, parameters('eventHubs')[copyIndex()].eventHubAuthRule), '2017-04-01').primaryConnectionString]",
+                    "name": "[parameters('eventHubs')[copyIndex()].name]"
+                }
+            }
+        },
+        "functionApps": {
+            "type":"array",
+            "copy": {
+                "count":"[length(parameters('functionApps'))]",
+                "input": {
+                     "value": "[listkeys(concat('Microsoft.Web/sites/', parameters('functionApps')[copyIndex()].functionName, '/host/default/'),'2016-08-01').functionKeys.default]",
+                     "name":"[parameters('functionApps')[copyIndex()].name]"
+                }
+            }
+        }
+    }
+}
