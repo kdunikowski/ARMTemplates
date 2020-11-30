@@ -1,0 +1,153 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "service_api_mgmt_iotbackbone_name": {
+            "defaultValue": "api-mgmt-iotbackbone123",
+            "type": "String"
+        },
+        "publisherEmail": {
+            "type": "string"
+        },
+        "publisherName": {
+            "type": "string"
+        },
+        "APIS": {
+            "type": "array"
+        },
+        "skuName": {
+            "type":"string"
+        },
+        "skuCapacity": {
+            "type": "int"
+        },
+        "backends": {
+            "type": "array"
+        },
+        "namedValues": {
+            "type": "array"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ApiManagement/service",
+            "apiVersion": "2020-06-01-preview",
+            "name": "[parameters('service_api_mgmt_iotbackbone_name')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "[parameters('skuName')]",
+                "capacity": "[parameters('skuCapacity')]"
+            },
+            "properties": {
+                "publisherEmail": "[parameters('publisherEmail')]",
+                "publisherName": "[parameters('publisherName')]"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis",
+            "apiVersion": "2020-06-01-preview",
+            "name": "[concat(parameters('service_api_mgmt_iotbackbone_name'), '/', parameters('APIS')[copyIndex()].name)]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_api_mgmt_iotbackbone_name'))]"
+            ],
+            "properties": {
+                "displayName": "[parameters('APIS')[copyIndex()].name]",
+                "apiRevision": "[parameters('APIS')[copyIndex()].version]",
+                "subscriptionRequired": false,
+                "path": "[parameters('APIS')[copyIndex()].path]",
+                "protocols": "[parameters('APIS')[copyIndex()].protocols]",
+                "isCurrent": true
+            },
+            "copy": {
+                "name":"api-mgmt-names",
+                "count":"[length(parameters('APIS'))]"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/backends",
+            "apiVersion": "2020-06-01-preview",
+            "name": "[concat(parameters('service_api_mgmt_iotbackbone_name'), '/', parameters('backends')[copyIndex()].functionAppName)]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_api_mgmt_iotbackbone_name'))]"
+            ],
+            "properties": {
+                "url": "[concat('https://',parameters('backends')[copyIndex()].functionAppName,'.azurewebsites.net/api')]",
+                "protocol": "http",
+                "resourceId": "[concat('https://management.azure.com/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Web/sites/', parameters('backends')[copyIndex()].functionAppName)]",
+                "credentials": {
+                    "header": {
+                        "x-functions-key": [
+                            "[concat('{{', parameters('backends')[copyIndex()].key,'}}')]"
+                        ]
+                    }
+                }
+            },
+            "copy":{
+                "name":"api-mgmt-backends",
+                "count":"[length(parameters('backends'))]"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/namedValues",
+            "apiVersion": "2020-06-01-preview",
+            "name": "[concat(parameters('service_api_mgmt_iotbackbone_name'), '/', parameters('namedValues')[copyIndex()].key)]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_api_mgmt_iotbackbone_name'))]"
+            ],
+            "properties": {
+                "displayName": "[parameters('namedValues')[copyIndex()].key]",
+                "tags": "[parameters('namedValues')[copyIndex()].tags]",
+                "secret": "[parameters('namedValues')[copyIndex()].secret]",
+                "value":"[listkeys(concat('Microsoft.Web/sites/', parameters('namedValues')[copyIndex()].functionAppName, '/host/default/'),'2016-08-01').functionKeys.default]"
+            },
+            "copy":{
+                "name":"namedValues",
+                "count":"[length(parameters('namedValues'))]"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/properties",
+            "apiVersion": "2019-01-01",
+            "name": "[concat(parameters('service_api_mgmt_iotbackbone_name'), '/', parameters('namedValues')[copyIndex()].key)]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_api_mgmt_iotbackbone_name'))]"
+            ],
+            "properties": {
+                "displayName": "[parameters('namedValues')[copyIndex()].key]",
+                "tags": "[parameters('namedValues')[copyIndex()].tags]",
+                "secret": "[parameters('namedValues')[copyIndex()].secret]",
+                "value":"[listkeys(concat('Microsoft.Web/sites/', parameters('namedValues')[copyIndex()].functionAppName, '/host/default/'),'2016-08-01').functionKeys.default]"
+            },
+            "copy":{
+                "name":"properties",
+                "count":"[length(parameters('namedValues'))]"
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('namedValues')[copyIndex()].functionAppName,'-operations')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/kdunikowski/ARMTemplates/master/api-mgmt-operations-template.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "namedValue": {
+						"value": "[parameters('namedValues')[copyIndex()]]"
+                    },
+                    "service_api_mgmt_iotbackbone_name": {
+                        "value": "[parameters('service_api_mgmt_iotbackbone_name')]"
+                    }
+                }
+            },
+            "dependsOn": ["namedValues"],
+            "copy": {
+                "name": "api-mgmt-operations",
+                "count":"[parameters('namedValues')]"
+            }
+        }
+    ]
+}

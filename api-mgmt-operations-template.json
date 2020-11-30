@@ -1,0 +1,54 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "service_api_mgmt_iotbackbone_name": {
+            "defaultValue": "api-mgmt-iotbackbone123",
+            "type": "String"
+        },
+        "namedValues": {
+            "type": "object"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2020-06-01-preview",
+            "name": "[concat(parameters('service_api_mgmt_iotbackbone_name'), '/', parameters('namedValues').functionAppName, '/' ,parameters('namedValues').operations[copyIndex()].operationName)]",
+            "dependsOn": [],
+            "properties": {
+                "displayName": "[parameters('namedValues').operations[copyIndex()].displayName]",
+                "method": "[parameters('namedValues').operations[copyIndex()].method]",
+                "urlTemplate": "[parameters('namedValues').operations[copyIndex()].urlTemplate]",
+                "templateParameters": [],
+                "request": {
+                    "queryParameters": "[parameters('namedValues').operations[copyIndex()].parameters]",
+                    "headers": [],
+                    "representations": []
+                },
+                "responses": []
+            },
+            "copy":{
+                "name": "api-mgmt-operations",
+                "count":"[parameters('namedValues').operations]"
+            }
+        },
+        {   
+            "type": "Microsoft.ApiManagement/service/apis/operations/policies",
+            "apiVersion": "2020-06-01-preview",
+            "name": "[concat(parameters('service_api_mgmt_iotbackbone_name'), parameters('namedValues').functionAppName, '/' ,parameters('namedValues').operations[copyIndex()].operationName)]",
+            "dependsOn": [
+                "api-mgmt-operations"
+            ],
+            "properties": {
+                "value": "[concat('<policies>\r\n  <inbound>\r\n    <rewrite-uri template=\"', parameters('namedValues').operations[copyIndex()].policyUrl, '\"/>\r\n    <set-backend-service id=\"apim-generated-policy\" backend-id=\"', parameters('namedValues').functionAppName , '\" />\r\n    <base />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n  <on-error>\r\n    <base />\r\n  </on-error>\r\n</policies>')]",
+                "format": "xml"
+            },
+            "copy":{
+                "name":"api-mgmt-policies",
+                "count":"[parameters('namedValues').operations]"
+            }
+        }
+    ]
+}
