@@ -31,7 +31,7 @@
             },
             "copy":{
                 "name": "api-mgmt-operations",
-                "count":"[parameters('namedValue').operations]"
+                "count":"[length(parameters('namedValue').operations)]"
             }
         },
         {   
@@ -47,7 +47,7 @@
             },
             "copy":{
                 "name":"api-mgmt-policies",
-                "count":"[parameters('namedValue').operations]"
+                "count":"[length(parameters('namedValue').operations)]"
             }
         }
     ]
