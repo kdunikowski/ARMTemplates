@@ -146,7 +146,7 @@
             "dependsOn": ["namedValues"],
             "copy": {
                 "name": "api-mgmt-operations",
-                "count":"[parameters('namedValues')]"
+                "count":"[length(parameters('namedValues'))]"
             }
         }
     ]
