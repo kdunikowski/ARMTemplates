@@ -21,7 +21,7 @@
                 "displayName": "[parameters('namedValue').operations[copyIndex()].displayName]",
                 "method": "[parameters('namedValue').operations[copyIndex()].method]",
                 "urlTemplate": "[parameters('namedValue').operations[copyIndex()].urlTemplate]",
-                "templateParameters": [],
+                "templateParameters": "[parameters('namedValue').operations[copyIndex()].templateParameters]",
                 "request": {
                     "queryParameters": "[parameters('namedValue').operations[copyIndex()].parameters]",
                     "headers": [],
