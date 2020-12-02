@@ -68,7 +68,7 @@
 				}
 			},
 				"dependsOn": [
-					"[concat('iothubrout',parameters('iotHub').iotHubName)]"
+					"[concat('iothubroutes-',parameters('iotHub').iotHubName)]"
 					]
 		}
     ]
