@@ -9,7 +9,7 @@
     "resources": [
         {
 		"apiVersion": "2017-05-10",
-            "name": "[concat('iothubrout',parameters('iotHub').iotHubName)]",
+            "name": "[concat('iothubroutes-',parameters('iotHub').iotHubName)]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -29,7 +29,7 @@
 		},
 		{
             "apiVersion": "2017-05-10",
-            "name": "[parameters('iotHub').iotHubName]",
+            "name": "[concat('iothub-', parameters('iotHub').iotHubName)]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
