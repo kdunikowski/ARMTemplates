@@ -11,7 +11,7 @@
     "resources": 
     [],
     "outputs" : {
-        "connectionStrings":{
+        "connectionStrings": {
             "type":"array",
              "copy": {
                 "count": "[length(parameters('iotHubs'))]",
