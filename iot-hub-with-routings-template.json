@@ -60,10 +60,10 @@
 						"value": "[parameters('iotHub').partitionCount]"
 					},
 					"eventHubs": {
-						"value": "[reference(concat('iothubrout',parameters('iotHub').iotHubName)).outputs.iotHubEventHubs.value]"
+						"value": "[reference(concat('iothubroutes-',parameters('iotHub').iotHubName)).outputs.iotHubEventHubs.value]"
 					},
 					"routes": {
-						"value": "[reference(concat('iothubrout',parameters('iotHub').iotHubName)).outputs.iotHubRoutes.value]"
+						"value": "[reference(concat('iothubroutes-',parameters('iotHub').iotHubName)).outputs.iotHubRoutes.value]"
 					}
 				}
 			},
